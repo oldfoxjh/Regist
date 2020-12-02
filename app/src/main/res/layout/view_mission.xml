@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- 배경지도 -->
+        <org.osmdroid.views.MapView
+            android:id="@+id/mission_map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- 드론 카메라 -->
+        <RelativeLayout
+            android:id="@+id/container_fpv"
+            android:layout_width="160dp"
+            android:layout_height="90dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <kr.co.enord.dji.widget.DjiVideoFeedView
+                android:id="@+id/dji_primary_widget"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="false" />
+        </RelativeLayout>
+
+        <!-- 상단 드론 상태바 -->
+        <include
+            android:id="@+id/status_bar"
+            layout="@layout/status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 임무 설정 -->
+        <LinearLayout
+            android:id="@+id/container_mission_type"
+            android:layout_width="32dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="22dp"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/mission_map_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/status_bar">
+
+            <Button
+                android:id="@+id/btn_polygon_mission"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/btn_area_mission_selector"
+                android:gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/btn_waypoint_mission"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/btn_waypoint_mission_selector" />
+
+            <Button
+                android:id="@+id/btn_3d_mission"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/btn_3d_mission_selector" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_function"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/status_bar">
+
+            <Button
+                android:id="@+id/btn_load_geo_json"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/btn_open_selector" />
+
+            <Button
+                android:id="@+id/btn_new_course"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/btn_initialize_course_selector" />
+
+            <Button
+                android:id="@+id/btn_reverse_course"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/btn_reverse_course_selector" />
+        </LinearLayout>
+
+        <!-- 기체 이륙, 복귀 -->
+        <RelativeLayout
+            android:id="@+id/container_flight_control"
+            android:layout_width="36dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="80dp"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@id/status_bar"
+            app:layout_constraintTop_toTopOf="parent">
+            <Button
+                android:id="@+id/btn_flight_landing"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="22dp"
+                android:visibility="gone"
+                android:background="@drawable/btn_landing_selector" />
+
+            <Button
+                android:id="@+id/btn_flight_return_home"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/btn_return_selector" />
+
+            <Button
+                android:id="@+id/btn_rtl_cancel"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="22dp"
+                android:visibility="invisible"
+                android:background="@drawable/btn_landing_cancel_selector" />
+        </RelativeLayout>
+
+        <!-- 드론비행정보  -->
+        <include
+            android:id="@+id/flight_info"
+            layout="@layout/flight_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="200dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <!-- 촬영버튼  -->
+        <include
+            android:id="@+id/camera_setting_layout"
+            layout="@layout/camera_control"
+            android:layout_width="51dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="22dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/container_mission_setting"
+            layout="@layout/mission_setting"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_function"
+            app:layout_constraintWidth_percent="0.25" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:id="@+id/mission_container_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="@color/black"
+        android:clickable="true"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+        <ProgressBar
+            android:id="@+id/login_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/white" />
+    </RelativeLayout>
+</RelativeLayout>

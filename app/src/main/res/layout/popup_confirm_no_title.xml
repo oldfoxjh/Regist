@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:alpha="0.5"></RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_popup_confirm"
+        android:layout_width="320dp"
+        android:layout_height="168dp"
+        android:background="#FFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_popup_confirm_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="현재 임무가 초기화됩니다.\n 계속하시겠습니까?"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="22dp"
+            android:lineSpacingExtra="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_popup_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_popup_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#555"
+            android:text="확인"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <Button
+            android:id="@+id/btn_popup_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#555"
+            android:text="취소"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_popup_confirm"
+            app:layout_constraintWidth_percent="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

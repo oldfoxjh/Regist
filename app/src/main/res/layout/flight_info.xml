@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="임무파일명 : "
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tv_mission_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="드론위치 : 위도"
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tv_drone_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:alpha="0.8"
+            android:text="경도"
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tv_drone_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="이륙위치 : 위도"
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tv_user_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:alpha="0.8"
+            android:text="경도"
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tv_user_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="거리"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/tv_flight_distance_from_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="m"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:alpha="0.8"
+            android:text="고도"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/tv_flight_altitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="m"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:alpha="0.8"
+            android:text="수평속도"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/tv_flight_horizontal_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="m"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:alpha="0.8"
+            android:text="수직속도"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/tv_flight_vertical_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="m"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+</LinearLayout>

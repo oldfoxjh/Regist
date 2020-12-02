@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/mission_bg"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/tv_area_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="영역 면적"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_distance_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_mission_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="-"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_area_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_area_title" />
+
+    <TextView
+        android:id="@+id/tv_interval_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="촬영간격(거리)"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_area_title" />
+
+    <TextView
+        android:id="@+id/tv_mission_lap_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="-"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_interval_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_interval_title" />
+
+    <TextView
+        android:id="@+id/tv_distance_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:text="비행 거리"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mission_area" />
+
+    <TextView
+        android:id="@+id/tv_mission_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="-"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_distance_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_distance_title" />
+
+    <TextView
+        android:id="@+id/tv_interval_second_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="촬영간격(초)"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_interval_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mission_lap_distance" />
+
+    <TextView
+        android:id="@+id/tv_mission_shoot_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="-"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_interval_second_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_interval_second_title" />
+
+    <ImageView
+        android:id="@+id/icon_mission_speed"
+        android:layout_width="21dp"
+        android:layout_height="16.5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
+        android:background="@mipmap/ico_mission_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mission_distance" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="비행속도"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintStart_toEndOf="@+id/icon_mission_speed"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_speed" />
+
+    <EditText
+        android:id="@+id/mission_flight_speed"
+        android:layout_width="36dp"
+        android:layout_height="16.5dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/white"
+        android:gravity="right"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:singleLine="true"
+        android:textSize="10dp"
+        android:maxLength="2"
+        app:layout_constraintEnd_toStartOf="@+id/mission_flight_speed_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_speed"
+        android:text="14" />
+
+    <TextView
+        android:id="@+id/mission_flight_speed_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="m/s"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_mission_shoot_interval"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_speed" />
+
+    <ImageView
+        android:id="@+id/icon_mission_altitude"
+        android:layout_width="21dp"
+        android:layout_height="16.5dp"
+        android:layout_marginTop="18dp"
+        android:background="@mipmap/ico_mission_3"
+        app:layout_constraintStart_toStartOf="@+id/icon_mission_speed"
+        app:layout_constraintTop_toBottomOf="@+id/icon_mission_speed" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="비행고도"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintStart_toEndOf="@+id/icon_mission_altitude"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_altitude" />
+
+    <EditText
+        android:id="@+id/mission_flight_altitude"
+        android:layout_width="36dp"
+        android:layout_height="16.5dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/white"
+        android:gravity="right"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:maxLength="3"
+        android:singleLine="true"
+        android:text="30"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/mission_flight_altitude_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_altitude" />
+
+    <TextView
+        android:id="@+id/mission_flight_altitude_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="m"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/mission_flight_speed_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_altitude" />
+
+    <ImageView
+        android:id="@+id/icon_mission_overlap"
+        android:layout_width="21dp"
+        android:layout_height="16.5dp"
+        android:layout_marginTop="18dp"
+        android:background="@mipmap/ico_mission_5"
+        app:layout_constraintStart_toStartOf="@+id/icon_mission_speed"
+        app:layout_constraintTop_toBottomOf="@+id/icon_mission_altitude" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="종중복도"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintStart_toEndOf="@+id/icon_mission_overlap"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_overlap" />
+
+    <EditText
+        android:id="@+id/mission_flight_overlap"
+        android:layout_width="36dp"
+        android:layout_height="16.5dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/white"
+        android:gravity="right"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:singleLine="true"
+        android:text="85"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/mission_flight_overlap_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_overlap" />
+
+    <TextView
+        android:id="@+id/mission_flight_overlap_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="%"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/mission_flight_speed_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_overlap" />
+
+    <ImageView
+        android:id="@+id/icon_mission_sidelap"
+        android:layout_width="21dp"
+        android:layout_height="16.5dp"
+        android:layout_marginTop="18dp"
+        android:background="@mipmap/ico_mission_5"
+        app:layout_constraintStart_toStartOf="@+id/icon_mission_speed"
+        app:layout_constraintTop_toBottomOf="@+id/icon_mission_overlap" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="횡중복도"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintStart_toEndOf="@+id/icon_mission_sidelap"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_sidelap" />
+
+    <EditText
+        android:id="@+id/mission_flight_sidelap"
+        android:layout_width="36dp"
+        android:layout_height="16.5dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/white"
+        android:gravity="right"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:singleLine="true"
+        android:text="85"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/mission_flight_sidelap_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_sidelap" />
+
+    <TextView
+        android:id="@+id/mission_flight_sidelap_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="%"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/mission_flight_speed_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_sidelap" />
+
+    <ImageView
+        android:id="@+id/icon_mission_angle"
+        android:layout_width="21dp"
+        android:layout_height="16.5dp"
+        android:layout_marginTop="18dp"
+        android:background="@mipmap/ico_mission_2"
+        app:layout_constraintStart_toStartOf="@+id/icon_mission_speed"
+        app:layout_constraintTop_toBottomOf="@+id/icon_mission_sidelap" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="영역회전"
+        android:textColor="#a5a5a5"
+        android:textSize="10dp"
+        app:layout_constraintStart_toEndOf="@+id/icon_mission_angle"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_angle" />
+
+    <TextView
+        android:id="@+id/textview_mission_angle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0°"
+        android:textColor="#ffffff"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/mission_flight_speed_unit"
+        app:layout_constraintTop_toTopOf="@+id/icon_mission_angle" />
+
+    <SeekBar
+        android:id="@+id/seekbar_mission_angle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:max="359"
+        android:maxHeight="3dp"
+        android:min="0"
+        android:progressDrawable="@drawable/setting_progress"
+        android:splitTrack="false"
+        android:thumb="@mipmap/setting_handle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/icon_mission_angle"
+        app:layout_constraintTop_toBottomOf="@+id/icon_mission_angle" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

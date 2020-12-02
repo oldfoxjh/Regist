@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kr.co.enord.dji.view.Login xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@android:color/white"
+    android:gravity="center">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_background">
+
+        <EditText
+            android:id="@+id/login_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:ems="10"
+            android:hint="아이디"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.401"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.498" />
+
+        <EditText
+            android:id="@+id/login_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/white"
+            android:ems="10"
+            android:hint="비밀번호"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/login_id"
+            app:layout_constraintTop_toBottomOf="@+id/login_id" />
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="130dp"
+            android:layout_height="127dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/btn_login_selector"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="@+id/login_password"
+            app:layout_constraintStart_toEndOf="@+id/login_id"
+            app:layout_constraintTop_toTopOf="@+id/login_id"
+            />
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textColor="@android:color/white"
+            app:layout_constraintStart_toStartOf="@+id/login_password"
+            app:layout_constraintTop_toBottomOf="@+id/login_password" />
+
+
+        <TextView
+            android:id="@+id/login_drone_connect_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@mipmap/top_bg_gray_connect_info"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="@string/aircraft_not_connect"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="@color/black"
+        android:clickable="true"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <ProgressBar
+            android:id="@+id/login_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/white" />
+    </RelativeLayout>
+</kr.co.enord.dji.view.Login>

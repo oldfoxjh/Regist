@@ -1,0 +1,20 @@
+<resources>
+    <dimen name="status_height">80dp</dimen>
+    <dimen name="custom_preflight_info_text_size">18dp</dimen>
+    <dimen name="custom_preflight_info_text_x">18dp</dimen>
+    <dimen name="custom_preflight_info_text_y">28dp</dimen>
+
+    <dimen name="popup_single_line_witdth_type_1">300dp</dimen>
+    <dimen name="popup_single_line_height_type_1">146dp</dimen>
+
+    <dimen name="popup_single_line_witdth_type_2">320dp</dimen>
+    <dimen name="popup_single_line_height_type_2">168dp</dimen>
+
+    <dimen name="map_mission_marker_width">30dp</dimen>
+    <dimen name="map_mission_marker_height">20dp</dimen>
+
+    <dimen name="mission_font">14dp</dimen>
+    <dimen name="entry_font">11dp</dimen>
+
+    <dimen name="radio_button_font_size">7dp</dimen>
+</resources>
