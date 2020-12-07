@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -49,6 +50,7 @@ import dji.sdk.camera.VideoFeeder;
 import io.reactivex.observers.DefaultObserver;
 import kr.co.enord.dji.DroneApplication;
 import kr.co.enord.dji.R;
+import kr.co.enord.dji.model.AltResponse;
 import kr.co.enord.dji.model.DroneStatus;
 import kr.co.enord.dji.model.EMessage;
 import kr.co.enord.dji.model.EnordLocationManager;
@@ -57,6 +59,7 @@ import kr.co.enord.dji.model.GeoJson;
 import kr.co.enord.dji.model.MissionHistory;
 import kr.co.enord.dji.model.RectD;
 import kr.co.enord.dji.model.RxEventBus;
+import kr.co.enord.dji.model.ServerResponse;
 import kr.co.enord.dji.model.ViewWrapper;
 import kr.co.enord.dji.popup.CancelMission;
 import kr.co.enord.dji.popup.CancelRTL;
@@ -71,6 +74,9 @@ import kr.co.enord.dji.utils.MapLayer;
 import kr.co.enord.dji.utils.ResizeAnimation;
 import kr.co.enord.dji.widget.CustomPreFlightStatusWidget;
 import kr.co.enord.dji.widget.DjiVideoFeedView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Mission extends RelativeLayout implements View.OnClickListener, MapEventsReceiver, Marker.OnMarkerClickListener {
     private static final String TAG = "Mission";
@@ -688,24 +694,39 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 float flight_speed = Float.parseFloat(mission_flight_speed.getText().toString());
                 float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
 
-                int alt = Geo.getInstance().getElevation(marker_home_location.getPosition());
-                marker_home_location.getPosition().setAltitude(alt);
+                DroneApplication.getAPI().altitude(marker_home_location.getPosition().getLongitude(), marker_home_location.getPosition().getLatitude())
+                        .enqueue(new Callback<AltResponse>(){
+                    @Override
+                    public  void onResponse(Call<AltResponse> call, Response<AltResponse> response){
+                        if(response.code() == 200) {
+                            AltResponse body = response.body();
+                            marker_home_location.getPosition().setAltitude(body.getAltitude());
+                            if(btn_waypoint_mission.isSelected()) {
+                                mission.createWaypointMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed, altitude);
+                            }else{
+                                mission.createAreaMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed);
+                            }
+                            // 임무 체크
+                            String result = DroneApplication.getDroneInstance().checkMission(mission.getWaypointMission());
+                            if(result != null){
+                                // 오류팝업
+                                Log.e(TAG, result);
+                                m_container_progress.setVisibility(INVISIBLE);
+                                return;
+                            }
+                            // 임무 시작
+                            DroneApplication.getDroneInstance().uploadMission();
+                        }
+                        Log.e(TAG, "onResponse : " + response.message());
+                    }
 
-                if(btn_waypoint_mission.isSelected()) {
-                    mission.createWaypointMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed, altitude);
-                }else{
-                    mission.createAreaMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed);
-                }
-                // 임무 체크
-                String result = DroneApplication.getDroneInstance().checkMission(mission.getWaypointMission());
-                if(result != null){
-                    // 오류팝업
-                    Log.e(TAG, result);
-                    m_container_progress.setVisibility(INVISIBLE);
-                    return;
-                }
-                // 임무 시작
-                DroneApplication.getDroneInstance().uploadMission();
+                    @Override
+                    public  void onFailure(Call<AltResponse> call, Throwable t){
+                        Log.e(TAG, "onFailure : " + t.getMessage());
+                        Toast.makeText(m_context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_LONG).show();
+                    }
+                });
+
                 break;
             case R.id.btn_load_geo_json:
                 RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionLoad(m_context)));
