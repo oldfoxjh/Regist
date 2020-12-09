@@ -210,7 +210,11 @@ public class MainActivity extends AppCompatActivity {
                             // 카메라 모드를 촬영모드로 강제로 설정
                             DroneApplication.getDroneInstance().setCameraMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO);
 
+                            // 드론 비행고도를 최고치로 설정
                             DroneApplication.getDroneInstance().setMaxFlightHeight(500);
+
+                            // 광학줌 지원이 되면 최대 초점거리 설정 - 2020.12.09
+                            DroneApplication.getDroneInstance().isOpticalZoomSupported();
                         }
 
                         @Override

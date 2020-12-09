@@ -18,7 +18,7 @@ import retrofit2.http.Path;
 
 public interface IApiService {
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://enord.iptime.org:9099/")
+            .baseUrl("http://enord.iptime.org:9998/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 

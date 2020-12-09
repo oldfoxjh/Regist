@@ -945,6 +945,10 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             case RxEventBus.DRONE_MISSION_START_SUCCESS:
                 // 짐벌 각도 수정
                 DroneApplication.getDroneInstance().setGimbalRotate(-90);
+
+                // 광학줌 초첨거리 수정 - 2020.12.09
+                DroneApplication.getDroneInstance().setMaxOpticalZoomFocalLength();
+
                 // 비행경로 다시 세팅 - 임무 경로보다 상위로 올라오게..
                 m_map_view.getOverlayManager().remove(flying_line);
                 m_map_view.getOverlayManager().add(flying_line);
