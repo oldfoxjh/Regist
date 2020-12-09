@@ -56,6 +56,8 @@ public class DJI {
     boolean is_storage_sdcard;
     boolean is_recording = false;
 
+    int max_focal_length = 0;
+
 
     /**
      * 드론 상태정보 반환
@@ -387,7 +389,6 @@ public class DJI {
         return recording_time;
     }
 
-
     /**
      * 한장 또는 카메라 촬영 설정에 따라 촬영을 시작한다.
      */
@@ -445,6 +446,50 @@ public class DJI {
             }
         }
     }
+
+    /**
+     * 카메라 줌 지원 확인
+     */
+    public boolean isOpticalZoomSupported()
+    {
+        BaseProduct product = DJISDKManager.getInstance().getProduct();
+        if (product != null && product.isConnected()) {
+            Camera camera = DroneApplication.getDrone().getCamera();
+
+            camera.getOpticalZoomSpec(new CommonCallbacks.CompletionCallbackWith<SettingsDefinitions.OpticalZoomSpec>() {
+                @Override
+                public void onSuccess(SettingsDefinitions.OpticalZoomSpec opticalZoomSpec) {
+                    max_focal_length = opticalZoomSpec.getMaxFocalLength();
+                    Log.e("DJI", "max_focal_length : " + max_focal_length);
+                }
+
+                @Override
+                public void onFailure(DJIError djiError) {
+                    Log.e("DJI", "forcal length : " + djiError.getDescription());
+                }
+            });
+
+            return camera.isOpticalZoomSupported();
+        }
+
+        return false;
+    }
+
+    public  void setMaxOpticalZoomFocalLength()
+    {
+        if(max_focal_length == 0) return;
+
+        BaseProduct product = DJISDKManager.getInstance().getProduct();
+        if (product != null && product.isConnected()) {
+            Camera camera = DroneApplication.getDrone().getCamera();
+            camera.setOpticalZoomFocalLength(max_focal_length, djiError -> {
+                if(djiError != null) {
+                    ToastUtils.showToast(djiError.getDescription());
+                }
+            });
+        }
+    }
+
 
     //endregion
 
