@@ -56,6 +56,7 @@ public class GeoJson {
             }
 
             m_bound = new RectD(m_coordinates);
+            GeoJsonEx.INSTANCE.setJSON(geo);
         } catch (JSONException e) {
 
         }
