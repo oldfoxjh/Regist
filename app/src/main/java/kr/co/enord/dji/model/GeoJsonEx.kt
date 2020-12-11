@@ -7,7 +7,8 @@ import java.io.File
 
 object GeoJsonEx {
 
-    private val filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "enord" + File.separator + "중단임무" + File.separator + "temp.gson"
+    private val directoryPath = Environment.getExternalStorageDirectory().toString() + File.separator + "enord" + File.separator + "중단임무"
+    private val fileName =  "temp.gson"
 
 
     private var json = JSONObject()
@@ -51,8 +52,12 @@ object GeoJsonEx {
     }
 
     fun saveToFile(){
+        val file = File(directoryPath)
+        if (!file?.mkdirs()) {
+            return
+        }
         val jsonString = json.toString()
-        File(filePath).writeText(jsonString)
+        File(file, fileName).writeText(jsonString)
     }
 
 }
