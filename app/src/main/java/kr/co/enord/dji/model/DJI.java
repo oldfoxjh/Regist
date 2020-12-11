@@ -57,7 +57,7 @@ public class DJI {
     boolean is_recording = false;
 
     int max_focal_length = 0;
-
+    int target_waypoint_index = 0;
 
     /**
      * 드론 상태정보 반환
@@ -117,6 +117,10 @@ public class DJI {
      */
     public boolean isStorageSDCard(){ return is_storage_sdcard; }
 
+    public int targetWaypointIndex()
+    {
+        return target_waypoint_index;
+    }
     /**
      * 드론 최대비행고도를 설정한다.
      */
@@ -651,6 +655,10 @@ public class DJI {
 
         @Override
         public void onExecutionUpdate(WaypointMissionExecutionEvent executionEvent) {
+            if(executionEvent.getProgress() != null) {
+                RxEventBus.getInstance().sendDroneStatus(RxEventBus.MISSION_UPDATE_WAYPOINT);
+                target_waypoint_index = executionEvent.getProgress().targetWaypointIndex;
+            }
         }
 
         @Override

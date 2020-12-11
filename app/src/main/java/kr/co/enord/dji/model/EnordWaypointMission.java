@@ -38,7 +38,6 @@ public class EnordWaypointMission {
         for(int i = 0; i < size; i++){
             GeoPoint point = points.get(i);
             float calculated_altitude = (float)(point.getAltitude() - base_point.getAltitude()) + altitude;
-
             // 중간 지점일 경우 20M 추가
             //if(DroneApplication.getInterdPoint().contains(i)) calculated_altitude += 20;
 

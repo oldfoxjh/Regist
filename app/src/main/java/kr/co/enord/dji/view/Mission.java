@@ -27,6 +27,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
@@ -56,6 +57,7 @@ import kr.co.enord.dji.model.EMessage;
 import kr.co.enord.dji.model.EnordLocationManager;
 import kr.co.enord.dji.model.EnordWaypointMission;
 import kr.co.enord.dji.model.GeoJson;
+import kr.co.enord.dji.model.GeoJsonEx;
 import kr.co.enord.dji.model.MissionHistory;
 import kr.co.enord.dji.model.RectD;
 import kr.co.enord.dji.model.RxEventBus;
@@ -694,12 +696,14 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 float flight_speed = Float.parseFloat(mission_flight_speed.getText().toString());
                 float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
 
+
                 DroneApplication.getAPI().altitude(marker_home_location.getPosition().getLongitude(), marker_home_location.getPosition().getLatitude())
                         .enqueue(new Callback<AltResponse>(){
                     @Override
                     public  void onResponse(Call<AltResponse> call, Response<AltResponse> response){
                         if(response.code() == 200) {
                             AltResponse body = response.body();
+                            Log.e("DJI", "고도 : " + body.getAltitude());
                             marker_home_location.getPosition().setAltitude(body.getAltitude());
                             if(btn_waypoint_mission.isSelected()) {
                                 mission.createWaypointMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed, altitude);
@@ -1014,6 +1018,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 // 마커 처리
                 marker_home_location.setVisible(false);
                 break;
+            case RxEventBus.MISSION_UPDATE_WAYPOINT:
+                int index = DroneApplication.getDroneInstance().targetWaypointIndex() - 1;
+                if(index < 0) return;
+
+                GeoJsonEx.INSTANCE.deleteIndex(selected_points.subList(0, index));
+                GeoJsonEx.INSTANCE.saveToFile();
+                break;
         }
     }
 
@@ -1085,6 +1096,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                     clearMission();
                     m_mission_file = new MissionHistory(0, (String)marker.getRelatedObject());
                     GeoJson gson = Geo.getInstance().getGeoInfo(m_mission_file.m_filepath);
+
                     setPointsFromFile(gson.getCoordinates(), gson.getCoordinates().size());
 
                     mission_line.setPoints(gson.getCoordinates());
@@ -1093,9 +1105,18 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
                     tv_mission_file.setText(m_mission_file.m_filepath.substring(m_mission_file.m_filepath.lastIndexOf("/")+1));
 
+                    GeoJsonEx.INSTANCE.setJSON(m_mission_file.m_filepath);
                     // 임무경로에 복귀 지점 포인트 추가
                 //    EnordWaypointMission mission = new EnordWaypointMission();
                  //   mission.createWaypointMission(getMissonWaypoint(), marker_home_location.getPosition(), 10, 30);
+
+
+                    EnordWaypointMission mission = new EnordWaypointMission();
+                    float flight_speed = Float.parseFloat(mission_flight_speed.getText().toString());
+                    float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
+
+                    mission.createWaypointMission(getMissonWaypoint(), selected_points.get(42), flight_speed, altitude);
+
                     return false;
                 }
             });
@@ -1190,10 +1211,10 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
      */
     private List<GeoPoint> getMissonWaypoint(){
         List<GeoPoint> mission_points = new ArrayList<>();
-        float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
+        //float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
         if(btn_waypoint_mission.isSelected()){
             for(GeoPoint point : selected_points){
-                mission_points.add(new GeoPoint(point.getLatitude(), point.getLongitude(), point.getAltitude() + altitude));
+                mission_points.add(new GeoPoint(point.getLatitude(), point.getLongitude(), point.getAltitude()));
             }
         }else{
             // 비행경로 생성

@@ -54,6 +54,7 @@ public class RxEventBus {
     public static final int DRONE_COMPASS_CALIBRATION_FAIL = 0x705;
 
     public static final int MISSION_INITIALIZE = 0x1000;
+    public static final int MISSION_UPDATE_WAYPOINT = 0x1001;
 
     private static RxEventBus m_instance;
     private final PublishSubject<Integer> m_status;

@@ -53,10 +53,10 @@ public class GeoJson {
                 }
 
                 m_coordinates.add(new GeoPoint(latitude, longitude, altitude));
+
             }
 
             m_bound = new RectD(m_coordinates);
-            GeoJsonEx.INSTANCE.setJSON(geo);
         } catch (JSONException e) {
 
         }
