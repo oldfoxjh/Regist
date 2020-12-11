@@ -48,7 +48,9 @@ object GeoJsonEx {
                 ++deletedArrayCount
             }
 
-        }catch (e:Exception){}
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun saveToFile(){
@@ -57,7 +59,9 @@ object GeoJsonEx {
             return
         }
         val jsonString = json.toString()
-        File(file, fileName).writeText(jsonString)
+        val saveFile = File(file, fileName)
+        if (saveFile.exists() ) saveFile.delete()
+        saveFile.writeText(jsonString)
     }
 
 }
