@@ -13,8 +13,9 @@ object GeoJsonEx {
     private var json = JSONObject()
     private var deletedArrayCount = 0;
     private val consumedIndex = ArrayList<Int>()
-    fun setJSON(obj: JSONObject){
-        json = obj
+    fun setJSON(path: String){
+        val jsonText = File(path).readText()
+        json = JSONObject(jsonText)
         deletedArrayCount = 0;
         consumedIndex.clear()
     }
