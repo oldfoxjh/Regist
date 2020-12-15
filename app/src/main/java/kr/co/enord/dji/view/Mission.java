@@ -1105,17 +1105,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
                     tv_mission_file.setText(m_mission_file.m_filepath.substring(m_mission_file.m_filepath.lastIndexOf("/")+1));
 
+                    // 임시파일 원본정보 설정
                     GeoJsonEx.INSTANCE.setJSON(m_mission_file.m_filepath);
-                    // 임무경로에 복귀 지점 포인트 추가
-                //    EnordWaypointMission mission = new EnordWaypointMission();
-                 //   mission.createWaypointMission(getMissonWaypoint(), marker_home_location.getPosition(), 10, 30);
-
-
-                    EnordWaypointMission mission = new EnordWaypointMission();
-                    float flight_speed = Float.parseFloat(mission_flight_speed.getText().toString());
-                    float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
-
-                    mission.createWaypointMission(getMissonWaypoint(), selected_points.get(42), flight_speed, altitude);
 
                     return false;
                 }
