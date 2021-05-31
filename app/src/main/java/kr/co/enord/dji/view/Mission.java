@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
@@ -17,17 +16,22 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-
-import org.json.JSONObject;
+import dji.common.camera.SettingsDefinitions;
+import dji.sdk.camera.VideoFeeder;
+import io.reactivex.observers.DefaultObserver;
+import kr.co.enord.dji.DroneApplication;
+import kr.co.enord.dji.R;
+import kr.co.enord.dji.model.*;
+import kr.co.enord.dji.popup.*;
+import kr.co.enord.dji.utils.Geo;
+import kr.co.enord.dji.utils.InputFilterMinMax;
+import kr.co.enord.dji.utils.MapLayer;
+import kr.co.enord.dji.utils.ResizeAnimation;
+import kr.co.enord.dji.widget.CustomPreFlightStatusWidget;
+import kr.co.enord.dji.widget.DjiVideoFeedView;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
@@ -38,47 +42,12 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import dji.common.camera.SettingsDefinitions;
-import dji.sdk.camera.VideoFeeder;
-import io.reactivex.observers.DefaultObserver;
-import kr.co.enord.dji.DroneApplication;
-import kr.co.enord.dji.R;
-import kr.co.enord.dji.model.AltResponse;
-import kr.co.enord.dji.model.DroneStatus;
-import kr.co.enord.dji.model.EMessage;
-import kr.co.enord.dji.model.EnordLocationManager;
-import kr.co.enord.dji.model.EnordWaypointMission;
-import kr.co.enord.dji.model.GeoJson;
-import kr.co.enord.dji.model.GeoJsonEx;
-import kr.co.enord.dji.model.MissionHistory;
-import kr.co.enord.dji.model.RectD;
-import kr.co.enord.dji.model.RxEventBus;
-import kr.co.enord.dji.model.ServerResponse;
-import kr.co.enord.dji.model.ViewWrapper;
-import kr.co.enord.dji.popup.CancelMission;
-import kr.co.enord.dji.popup.CancelRTL;
-import kr.co.enord.dji.popup.CompassCalibration;
-import kr.co.enord.dji.popup.Landing;
-import kr.co.enord.dji.popup.MissionLoad;
-import kr.co.enord.dji.popup.MissionStart;
-import kr.co.enord.dji.popup.ReturnHome;
-import kr.co.enord.dji.utils.Geo;
-import kr.co.enord.dji.utils.InputFilterMinMax;
-import kr.co.enord.dji.utils.MapLayer;
-import kr.co.enord.dji.utils.ResizeAnimation;
-import kr.co.enord.dji.widget.CustomPreFlightStatusWidget;
-import kr.co.enord.dji.widget.DjiVideoFeedView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.io.File;
+import java.util.*;
 
 public class Mission extends RelativeLayout implements View.OnClickListener, MapEventsReceiver, Marker.OnMarkerClickListener {
     private static final String TAG = "Mission";
@@ -334,6 +303,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         btn_3d_mission.setOnClickListener(this);
         btn_3d_mission.setSelected(true);
 
+        findViewById(R.id.btn_load_geo_json_from_server).setOnClickListener(this);  //서버에서 geojson파일 받기 추가
         findViewById(R.id.btn_load_geo_json).setOnClickListener(this);                  // 파일 로드 버튼
         findViewById(R.id.btn_mission_upload).setOnClickListener(this);                 // 업로드 버튼
         findViewById(R.id.btn_new_course).setOnClickListener(this);
@@ -731,6 +701,10 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                     }
                 });
 
+                break;
+            case R.id.btn_load_geo_json_from_server:
+                GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
+                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionDownload(m_context, center)));
                 break;
             case R.id.btn_load_geo_json:
                 RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionLoad(m_context)));

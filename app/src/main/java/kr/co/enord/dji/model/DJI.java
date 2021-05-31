@@ -1,10 +1,7 @@
 package kr.co.enord.dji.model;
 
 import android.util.Log;
-
 import androidx.annotation.Nullable;
-import java.util.List;
-
 import dji.common.camera.SettingsDefinitions;
 import dji.common.camera.StorageState;
 import dji.common.camera.SystemState;
@@ -14,11 +11,7 @@ import dji.common.flightcontroller.FlightControllerState;
 import dji.common.gimbal.GimbalMode;
 import dji.common.gimbal.Rotation;
 import dji.common.gimbal.RotationMode;
-import dji.common.mission.waypoint.WaypointMission;
-import dji.common.mission.waypoint.WaypointMissionDownloadEvent;
-import dji.common.mission.waypoint.WaypointMissionExecutionEvent;
-import dji.common.mission.waypoint.WaypointMissionState;
-import dji.common.mission.waypoint.WaypointMissionUploadEvent;
+import dji.common.mission.waypoint.*;
 import dji.common.product.Model;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.base.BaseProduct;
@@ -33,6 +26,8 @@ import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 import kr.co.enord.dji.DroneApplication;
 import kr.co.enord.dji.utils.ToastUtils;
+
+import java.util.List;
 
 public class DJI {
     boolean is_flying;              /** 드론 비행상태 */
@@ -126,6 +121,7 @@ public class DJI {
      */
     public void setMaxFlightHeight(int height){
         try{
+
             FlightController flight_controller = getFlightController();
             flight_controller.setMaxFlightHeight(height, djiError -> {
                 if(djiError != null){

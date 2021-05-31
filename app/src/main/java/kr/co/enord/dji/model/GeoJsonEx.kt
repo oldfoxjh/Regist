@@ -2,11 +2,12 @@ package kr.co.enord.dji.model
 
 import android.os.Environment
 import android.util.Log
-import com.google.gson.JsonArray
 import org.json.JSONArray
 import org.json.JSONObject
 import org.osmdroid.util.GeoPoint
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 object GeoJsonEx {
 
@@ -32,14 +33,14 @@ object GeoJsonEx {
 
             var calculatedIdx = startIndex - deletedArrayCount
             val features: JSONArray = json.getJSONArray("features")
-            var type: String = json.getString("type").toLowerCase()
+            var type: String = json.getString("type").lowercase(Locale.getDefault())
 
             if (type != "featurecollection") return
 
             // Feature의 첫번째 이외의 Data는 무시
             val geometry = features.getJSONObject(0).getJSONObject("geometry")
 
-            type = geometry.getString("type").toLowerCase()
+            type = geometry.getString("type").lowercase(Locale.getDefault())
             var coordinates: JSONArray? = null
             if (type == "linestring") {
                 coordinates = geometry.getJSONArray("coordinates")
@@ -51,7 +52,10 @@ object GeoJsonEx {
                 coordinates?.remove(0)
                 ++deletedArrayCount
 
-                Log.e("DJI", "target idx : " + idx + " delete count : " + deletedArrayCount + " remain count : " + coordinates?.length())
+                Log.e(
+                    "DJI",
+                    "target idx : " + idx + " delete count : " + deletedArrayCount + " remain count : " + coordinates?.length()
+                )
             }
 
         } catch (e: Exception) {
@@ -62,14 +66,14 @@ object GeoJsonEx {
     fun deleteIndex(idx: List<GeoPoint>){
         try {
             val features: JSONArray = json.getJSONArray("features")
-            var type: String = json.getString("type").toLowerCase()
+            var type: String = json.getString("type").lowercase(Locale.getDefault())
 
             if (type != "featurecollection") return
 
             // Feature의 첫번째 이외의 Data는 무시
             val geometry = features.getJSONObject(0).getJSONObject("geometry")
 
-            type = geometry.getString("type").toLowerCase()
+            type = geometry.getString("type").lowercase(Locale.getDefault())
             var coordinates: JSONArray = JSONArray()
             if (type == "linestring") {
                 coordinates = geometry.getJSONArray("coordinates")
@@ -77,26 +81,24 @@ object GeoJsonEx {
                 coordinates = geometry.getJSONArray("coordinates").getJSONArray(0)
             }
 
-            for(item in idx)
-            {
+            for (item in idx) {
                 // 비교
                 var index = -1;
-                for(i in 0 until coordinates.length())
-                {
+                for (i in 0 until coordinates.length()) {
                     val obj = coordinates.getJSONArray(i)
                     var distance = item.distanceToAsDouble(GeoPoint(obj.getDouble(1), obj.getDouble(0)))
 
-                    if(distance < 2) {
+                    if (distance < 2) {
                         index = i
                         break
                     };
                 }
-                if(index > -1) coordinates.remove(index);
+                if (index > -1) coordinates.remove(index);
             }
 
             Log.e("DJI", "count : " + coordinates.length())
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }

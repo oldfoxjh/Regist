@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 
 repositories {
     mavenLocal()
@@ -89,11 +90,11 @@ dependencies {
         exclude module: 'fly-safe-database'
     })
 
-    implementation('com.dji:dji-sdk:4.13', {
+    implementation('com.dji:dji-sdk:4.14.1', {
         exclude module: 'library-anti-distortion'
         exclude module: 'fly-safe-database'
     })
-    compileOnly 'com.dji:dji-sdk-provided:4.13'
+    compileOnly 'com.dji:dji-sdk-provided:4.14.1'
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.core:core:1.0.0'

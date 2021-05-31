@@ -2,20 +2,8 @@ package kr.co.enord.dji.utils;
 
 import android.os.Environment;
 import android.util.Log;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import dji.common.camera.SettingsDefinitions;
 import dji.common.error.DJIError;
-import dji.common.util.CommonCallbacks;
 import dji.sdk.media.DownloadListener;
 import dji.sdk.media.FetchMediaTaskScheduler;
 import dji.sdk.media.MediaFile;
@@ -28,6 +16,10 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class MediaDownload {
     private static final String TAG = "MediaDownload";
@@ -184,6 +176,11 @@ public class MediaDownload {
 
             @Override
             public void onRateUpdate(long l, long l1, long l2) {
+            }
+
+            @Override
+            public void onRealtimeDataUpdate(byte[] bytes, long l, boolean b) {
+                
             }
 
             @Override

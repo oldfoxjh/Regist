@@ -1,14 +1,12 @@
 package kr.co.enord.dji.model;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONObject;
 
 public class GeoJson {
     public static final int GEO_TYPE_NONE = 0x00;
@@ -19,12 +17,18 @@ public class GeoJson {
     private List<GeoPoint> m_coordinates = new ArrayList<>();
     private RectD m_bound = null;
 
+    //서버에서 내려받을 경우 unique key와 history여부(찍은곳인지 아닌지)가 추가됨
+    private String key = "";
+    private Boolean history = false;
+
     public GeoJson(String json) {
         try {
             // FeatureCollection 인지 확인
             JSONObject geo = new JSONObject(json);
             JSONArray features = geo.getJSONArray("features");
             String type = geo.getString("type").toLowerCase();
+            key = geo.optString("id", "");
+            history = geo.optBoolean("isInvestigated",false);
 
             if(!type.equals("featurecollection")) return;
 
@@ -76,6 +80,18 @@ public class GeoJson {
 
     public GeoPoint getCenter(){
         return m_bound.getCenter();
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public Boolean getHistory() {
+        return history;
+    }
+
+    public Boolean fromServer(){
+        return !key.equals("");
     }
 
     @Override
