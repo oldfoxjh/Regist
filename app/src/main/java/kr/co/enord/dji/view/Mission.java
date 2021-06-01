@@ -1062,7 +1062,16 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             m_map_view.getOverlayManager().add(polygon);
             m_waypoint_areas.add(polygon);
 
-            Marker m = getMissionCenterMarker(gson.getCenter(), String.valueOf(i++));
+            //파일명의 끝에 숫자로 표시하도록 변경
+            String title = String.valueOf(i++);
+            try {
+                String[] splitFileName = file.getName().split("_");
+                String lastName = splitFileName[splitFileName.length-1];
+                title = String.valueOf(Integer.parseInt(lastName.substring(0,lastName.lastIndexOf("."))));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            Marker m = getMissionCenterMarker(gson.getCenter(), title);
 
             m.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                 @Override
