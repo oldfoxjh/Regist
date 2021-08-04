@@ -1,57 +1,41 @@
 package kr.co.enord.dji;
 
 import android.Manifest;
-import android.animation.AnimatorInflater;
-import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import dji.common.camera.SettingsDefinitions;
+import dji.common.error.DJIError;
+import dji.common.error.DJISDKError;
+import dji.sdk.base.BaseComponent;
+import dji.sdk.base.BaseProduct;
+import dji.sdk.sdkmanager.DJISDKInitEvent;
+import dji.sdk.sdkmanager.DJISDKManager;
 import io.reactivex.observers.DefaultObserver;
-import kr.co.enord.dji.R;
-import com.squareup.otto.Subscribe;
+import kr.co.enord.dji.model.EnordLocationManager;
+import kr.co.enord.dji.model.RxEventBus;
+import kr.co.enord.dji.model.ViewWrapper;
+import kr.co.enord.dji.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import dji.common.error.DJIError;
-import dji.common.error.DJISDKError;
-import dji.common.util.CommonCallbacks;
-import dji.log.DJILog;
-import dji.sdk.base.BaseComponent;
-import dji.sdk.base.BaseProduct;
-import dji.sdk.sdkmanager.DJISDKInitEvent;
-import dji.sdk.sdkmanager.DJISDKManager;
-import kr.co.enord.dji.model.EnordLocationManager;
-import kr.co.enord.dji.model.RxEventBus;
-import kr.co.enord.dji.model.ViewWrapper;
-import kr.co.enord.dji.utils.ToastUtils;
 
 public class MainActivity extends AppCompatActivity {
 

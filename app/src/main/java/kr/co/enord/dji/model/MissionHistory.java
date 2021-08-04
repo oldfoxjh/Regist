@@ -45,7 +45,7 @@ public final class MissionHistory {
      * @param return_time
      * @return
      */
-    private int calculatePastDays(String return_time){
+    public static int calculatePastDays(String return_time){
 
         int diff = -1;
         try {
@@ -63,6 +63,7 @@ public final class MissionHistory {
 
         return diff;
     }
+
 
     public static class MissionHistoryEntry implements BaseColumns {
         public static final String TABLE_NAME = "mission_history";

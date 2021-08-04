@@ -19,7 +19,6 @@ public class GeoJson {
 
     //서버에서 내려받을 경우 unique key와 history여부(찍은곳인지 아닌지)가 추가됨
     private String key = "";
-    private Boolean history = false;
 
     public GeoJson(String json) {
         try {
@@ -27,8 +26,6 @@ public class GeoJson {
             JSONObject geo = new JSONObject(json);
             JSONArray features = geo.getJSONArray("features");
             String type = geo.getString("type").toLowerCase();
-            key = geo.optString("id", "");
-            history = geo.optBoolean("isInvestigated",false);
 
             if(!type.equals("featurecollection")) return;
 
@@ -84,10 +81,6 @@ public class GeoJson {
 
     public String getKey() {
         return key;
-    }
-
-    public Boolean getHistory() {
-        return history;
     }
 
     public Boolean fromServer(){

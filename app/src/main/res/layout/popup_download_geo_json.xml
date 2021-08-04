@@ -11,17 +11,6 @@
         android:alpha="0.5">
 
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/container_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-        />
-
-    </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_selector"
@@ -61,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="내려받을 임무비행 경로를 선택하세요."
+            android:text="내려받을 비행 경로의 종류를 선택하세요."
             android:textColor="#000"
             android:textSize="18dp"
             app:layout_constraintEnd_toEndOf="parent"

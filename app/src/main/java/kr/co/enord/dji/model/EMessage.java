@@ -4,6 +4,8 @@ public class EMessage {
 
     public static final int GEO_JSON_FILE_PATH = 0x00;
 
+    public static final int GEO_JSON_DOWNLOAD_TARGET = 0xFF01;
+
     int m_type;
     String m_msg;
 

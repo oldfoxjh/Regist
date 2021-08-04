@@ -1,13 +1,10 @@
 package kr.co.enord.dji.model;
 
-import android.util.Log;
-
+import kr.co.enord.dji.utils.Geo;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import kr.co.enord.dji.utils.Geo;
 
 public class RectD {
     private double left = Double.MAX_VALUE;
@@ -25,6 +22,13 @@ public class RectD {
             top = (top > _point.getLatitude()) ? _point.getLatitude() : top;
             bottom = (bottom > _point.getLatitude()) ? bottom : _point.getLatitude();
         }
+    }
+
+    public RectD(double top, double bottom, double left, double right){
+        this.top = top;
+        this.bottom = bottom;
+        this.left = left;
+        this.right = right;
     }
 
     public GeoPoint getCenter(){

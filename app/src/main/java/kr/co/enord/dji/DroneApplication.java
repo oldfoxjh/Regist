@@ -2,14 +2,7 @@ package kr.co.enord.dji;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
-
 import androidx.multidex.MultiDex;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
 import kr.co.enord.dji.api.IApiService;
@@ -17,6 +10,10 @@ import kr.co.enord.dji.model.DJI;
 import kr.co.enord.dji.model.FlightInfoDBHelper;
 import kr.co.enord.dji.model.MissionHistory;
 import kr.co.enord.dji.utils.MediaDownload;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Main application
@@ -86,7 +83,9 @@ public class DroneApplication extends Application {
      *
      */
     public static IApiService getAPI(){ return enord; }
+    @Deprecated
     public static MediaDownload getMediaDownloader() { return m_media_downloader; }
+    @Deprecated
     public static void setMediaDownloader() { m_media_downloader = new MediaDownload(); }
 
     /**

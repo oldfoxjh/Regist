@@ -9,18 +9,15 @@ import dji.sdk.media.FetchMediaTaskScheduler;
 import dji.sdk.media.MediaFile;
 import dji.sdk.media.MediaManager;
 import kr.co.enord.dji.DroneApplication;
-import kr.co.enord.dji.model.ServerResponse;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * @deprecated 업로드를 위해서 사용된 클래스지만 업로드 기능을 사용하지 않아 삭제처리, 서버 api도 삭제됨
+ **/
+@Deprecated
 public class MediaDownload {
     private static final String TAG = "MediaDownload";
     private static final String path = Environment.getExternalStorageDirectory().getPath() + "/Enord/Pictures/";
@@ -180,7 +177,7 @@ public class MediaDownload {
 
             @Override
             public void onRealtimeDataUpdate(byte[] bytes, long l, boolean b) {
-                
+
             }
 
             @Override
@@ -198,7 +195,7 @@ public class MediaDownload {
                     downloadFile(medias.get(0));
                 }else{
                     m_download_complete = true;
-                    uploadPicture();
+//                    uploadPicture();
                 }
             }
 
@@ -211,38 +208,40 @@ public class MediaDownload {
 
     /**
      * 서버에 파일 업로드
+     * @deprecated 서버 api 삭제
      */
+    @Deprecated
     private void uploadPicture() {
-        if(upload_files == null || upload_files.size() == 0) return;
-
-        File file = new File(upload_files.get(0));
-        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("upload", file.getName(), requestBody);
-
-        float[] position = Geo.getInstance().getPicturePosition(upload_files.get(0));
-        RequestBody latitude = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(position[0]));
-        RequestBody longitude = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(position[1]));
-
-        HashMap<String, RequestBody> map = new HashMap<>();
-        map.put("lat", latitude);
-        map.put("lng", longitude);
-
-        DroneApplication.getAPI().uploadFileWithParam(fileToUpload, map).enqueue(new Callback<ServerResponse>(){
-            @Override
-            public  void onResponse(Call<ServerResponse> call, Response<ServerResponse> response){
-                if(response.code() == 200) {
-                    if(upload_files.size() > 0) upload_files.remove(0);
-                    uploadPicture();
-                }
-                Log.e(TAG, "onResponse : " + response.message());
-            }
-
-            @Override
-            public  void onFailure(Call<ServerResponse> call, Throwable t){
-                uploadPicture();
-                Log.e(TAG, "onFailure : " + t.getMessage());
-            }
-        });
+//        if(upload_files == null || upload_files.size() == 0) return;
+//
+//        File file = new File(upload_files.get(0));
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+//        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("upload", file.getName(), requestBody);
+//
+//        float[] position = Geo.getInstance().getPicturePosition(upload_files.get(0));
+//        RequestBody latitude = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(position[0]));
+//        RequestBody longitude = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(position[1]));
+//
+//        HashMap<String, RequestBody> map = new HashMap<>();
+//        map.put("lat", latitude);
+//        map.put("lng", longitude);
+//
+//        DroneApplication.getAPI().uploadFileWithParam(fileToUpload, map).enqueue(new Callback<ServerResponse>(){
+//            @Override
+//            public  void onResponse(Call<ServerResponse> call, Response<ServerResponse> response){
+//                if(response.code() == 200) {
+//                    if(upload_files.size() > 0) upload_files.remove(0);
+//                    uploadPicture();
+//                }
+//                Log.e(TAG, "onResponse : " + response.message());
+//            }
+//
+//            @Override
+//            public  void onFailure(Call<ServerResponse> call, Throwable t){
+//                uploadPicture();
+//                Log.e(TAG, "onFailure : " + t.getMessage());
+//            }
+//        });
     }
 
     /**
