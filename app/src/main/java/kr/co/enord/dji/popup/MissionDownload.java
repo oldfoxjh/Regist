@@ -6,27 +6,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+
 import kr.co.enord.dji.DroneApplication;
 import kr.co.enord.dji.R;
 import kr.co.enord.dji.model.EMessage;
 import kr.co.enord.dji.model.RxEventBus;
 import kr.co.enord.dji.model.ViewWrapper;
 import kr.co.enord.dji.utils.ToastUtils;
-import org.osmdroid.util.GeoPoint;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.util.ArrayList;
 
 public class MissionDownload extends ConstraintLayout implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
 
 //    private GeoPoint centerPoint = null;
     private int targetId = -1;
 
-    public MissionDownload(Context context, GeoPoint center) {
+    public MissionDownload(Context context) {
         super(context);
 //        centerPoint = center;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);

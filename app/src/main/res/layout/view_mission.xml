@@ -45,41 +45,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- 임무 설정 -->
-        <LinearLayout
-            android:id="@+id/container_mission_type"
-            android:layout_width="32dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="22dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/mission_map_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/status_bar">
+        <!-- 임무 설정 삭제-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/container_mission_type"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginStart="22dp"-->
+<!--            android:orientation="vertical"-->
+<!--            android:visibility="visible"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/mission_map_view"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/status_bar">-->
 
-            <Button
-                android:id="@+id/btn_polygon_mission"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/btn_area_mission_selector"
-                android:gravity="center_horizontal" />
+<!--            <Button-->
+<!--                android:id="@+id/btn_polygon_mission"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:layout_marginTop="22dp"-->
+<!--                android:background="@drawable/btn_area_mission_selector"-->
+<!--                android:gravity="center_horizontal" />-->
 
-            <Button
-                android:id="@+id/btn_waypoint_mission"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/btn_waypoint_mission_selector" />
+<!--            <Button-->
+<!--                android:id="@+id/btn_waypoint_mission"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:layout_marginTop="22dp"-->
+<!--                android:background="@drawable/btn_waypoint_mission_selector" />-->
 
-            <Button
-                android:id="@+id/btn_3d_mission"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/btn_3d_mission_selector" />
-        </LinearLayout>
+<!--            <Button-->
+<!--                android:id="@+id/btn_3d_mission"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:layout_marginTop="22dp"-->
+<!--                android:background="@drawable/btn_3d_mission_selector" />-->
+<!--        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/container_function"
@@ -89,37 +89,59 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:clickable="true"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/status_bar">
 
-            <Button
-                android:id="@+id/btn_load_geo_json_from_server"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginRight="12dp"
-                android:background="@drawable/btn_download_selector" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <Button
+                    android:id="@+id/btn_area_back"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="12dp"
+                    android:visibility="invisible"
+                    android:background="@drawable/btn_backward_selector" />
+                <Button
+                    android:id="@+id/btn_load_geo_json_from_server"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/btn_download_selector" />
 
-            <Button
-                android:id="@+id/btn_load_geo_json"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginRight="12dp"
-                android:background="@drawable/btn_open_selector" />
+                <Button
+                    android:id="@+id/btn_load_geo_json"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/btn_open_selector" />
 
-            <Button
-                android:id="@+id/btn_new_course"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginRight="12dp"
-                android:background="@drawable/btn_initialize_course_selector" />
+                <!--            <Button-->
+                <!--                android:id="@+id/btn_new_course"-->
+                <!--                android:layout_width="36dp"-->
+                <!--                android:layout_height="36dp"-->
+                <!--                android:layout_marginRight="12dp"-->
+                <!--                android:background="@drawable/btn_initialize_course_selector" />-->
 
+                <!--            <Button-->
+                <!--                android:id="@+id/btn_reverse_course"-->
+                <!--                android:layout_width="36dp"-->
+                <!--                android:layout_height="36dp"-->
+                <!--                android:layout_marginRight="2dp"-->
+                <!--                android:background="@drawable/btn_reverse_course_selector" />-->
+            </LinearLayout>
             <Button
-                android:id="@+id/btn_reverse_course"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginRight="2dp"
-                android:background="@drawable/btn_reverse_course_selector" />
+                android:id="@+id/btn_flight_camera_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btn_flight_record"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/btn_csetting_selector"
+                android:layout_gravity="right"
+                android:visibility="visible" />
         </LinearLayout>
 
         <!-- 기체 이륙, 복귀 -->
@@ -173,17 +195,17 @@
 
 
         <!-- 촬영버튼  -->
-        <include
-            android:id="@+id/camera_setting_layout"
-            layout="@layout/camera_control"
-            android:layout_width="51dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="22dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <include-->
+<!--            android:id="@+id/camera_setting_layout"-->
+<!--            layout="@layout/camera_control"-->
+<!--            android:layout_width="51dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="26dp"-->
+<!--            android:layout_marginEnd="22dp"-->
+<!--            android:visibility="visible"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <include
             android:id="@+id/container_mission_setting"
@@ -196,7 +218,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/container_function"
             app:layout_constraintWidth_percent="0.25" />
+        <dji.ux.panel.CameraSettingExposurePanel
+            android:id="@+id/flight_camera_setting_panel"
+            android:layout_width="180dp"
+            android:layout_height="285dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/container_mission_setting"
+            android:layout_marginBottom="10dp"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:visibility="invisible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <RelativeLayout
         android:id="@+id/mission_container_progress"
         android:layout_width="match_parent"
