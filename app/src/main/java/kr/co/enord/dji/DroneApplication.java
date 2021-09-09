@@ -2,7 +2,13 @@ package kr.co.enord.dji;
 
 import android.app.Application;
 import android.content.Context;
+
 import androidx.multidex.MultiDex;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
 import kr.co.enord.dji.api.IApiService;
@@ -10,10 +16,6 @@ import kr.co.enord.dji.model.DJI;
 import kr.co.enord.dji.model.FlightInfoDBHelper;
 import kr.co.enord.dji.model.MissionHistory;
 import kr.co.enord.dji.utils.MediaDownload;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Main application
@@ -38,7 +40,7 @@ public class DroneApplication extends Application {
         com.secneo.sdk.Helper.install(this);
 
         app = this;
-        enord = IApiService.retrofit.create(IApiService.class);
+//        enord = IApiService.retrofit.create(IApiService.class);
     }
 
     /**
@@ -82,6 +84,8 @@ public class DroneApplication extends Application {
     /**
      *
      */
+    //API 클래스로 변경
+    @Deprecated
     public static IApiService getAPI(){ return enord; }
     @Deprecated
     public static MediaDownload getMediaDownloader() { return m_media_downloader; }

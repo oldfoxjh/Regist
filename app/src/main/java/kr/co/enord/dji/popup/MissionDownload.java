@@ -4,25 +4,16 @@ import android.app.Service;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.google.gson.JsonObject;
-
-import java.util.ArrayList;
-
-import kr.co.enord.dji.DroneApplication;
 import kr.co.enord.dji.R;
 import kr.co.enord.dji.model.EMessage;
 import kr.co.enord.dji.model.RxEventBus;
 import kr.co.enord.dji.model.ViewWrapper;
-import kr.co.enord.dji.utils.ToastUtils;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
+@Deprecated
 public class MissionDownload extends ConstraintLayout implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
 
 //    private GeoPoint centerPoint = null;
@@ -45,31 +36,31 @@ public class MissionDownload extends ConstraintLayout implements View.OnClickLis
         (findViewById(R.id.btn_popup_confirm)).setOnClickListener(this);
         (findViewById(R.id.btn_popup_cancel)).setOnClickListener(this);
 
-        DroneApplication.getAPI().targets().enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                //목록 만들기
-                JsonObject object = response.body();
-                ArrayList<String> keys = new ArrayList();
-                for(String key: object.keySet()){
-                    keys.add(key);
-                    RadioButton radio_button = new RadioButton(context);
-                    radio_button.setText(key);
-                    radio_button.setTag(object.get(key).getAsInt());
-                    radio_button.setTextSize(getResources().getDimension(R.dimen.radio_button_font_size));
-                    type_list.addView(radio_button);
-                }
-                if (type_list.getChildCount() > 0){
-                    ((RadioButton)type_list.getChildAt(0)).setChecked(true);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                ToastUtils.showToast(t.getLocalizedMessage());
-                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(null));
-            }
-        });
+//        DroneApplication.getAPI().targets().enqueue(new Callback<JsonObject>() {
+//            @Override
+//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//                //목록 만들기
+//                JsonObject object = response.body();
+//                ArrayList<String> keys = new ArrayList();
+//                for(String key: object.keySet()){
+//                    keys.add(key);
+//                    RadioButton radio_button = new RadioButton(context);
+//                    radio_button.setText(key);
+//                    radio_button.setTag(object.get(key).getAsInt());
+//                    radio_button.setTextSize(getResources().getDimension(R.dimen.radio_button_font_size));
+//                    type_list.addView(radio_button);
+//                }
+//                if (type_list.getChildCount() > 0){
+//                    ((RadioButton)type_list.getChildAt(0)).setChecked(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<JsonObject> call, Throwable t) {
+//                ToastUtils.showToast(t.getLocalizedMessage());
+//                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(null));
+//            }
+//        });
 
         setClickable(true);
     }

@@ -22,11 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.osmdroid.api.IMapController;
@@ -43,6 +43,7 @@ import org.osmdroid.views.overlay.Polyline;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,6 +54,7 @@ import dji.ux.panel.CameraSettingExposurePanel;
 import io.reactivex.observers.DefaultObserver;
 import kr.co.enord.dji.DroneApplication;
 import kr.co.enord.dji.R;
+import kr.co.enord.dji.api.API;
 import kr.co.enord.dji.model.AltResponse;
 import kr.co.enord.dji.model.DroneStatus;
 import kr.co.enord.dji.model.EMessage;
@@ -60,7 +62,6 @@ import kr.co.enord.dji.model.EnordLocationManager;
 import kr.co.enord.dji.model.EnordWaypointMission;
 import kr.co.enord.dji.model.FlightLog;
 import kr.co.enord.dji.model.GeoJson;
-import kr.co.enord.dji.model.GeoJsonArea;
 import kr.co.enord.dji.model.GeoJsonEx;
 import kr.co.enord.dji.model.MissionHistory;
 import kr.co.enord.dji.model.RectD;
@@ -69,7 +70,6 @@ import kr.co.enord.dji.model.ViewWrapper;
 import kr.co.enord.dji.popup.CancelRTL;
 import kr.co.enord.dji.popup.CompassCalibration;
 import kr.co.enord.dji.popup.Landing;
-import kr.co.enord.dji.popup.MissionDownload;
 import kr.co.enord.dji.popup.MissionLoad;
 import kr.co.enord.dji.popup.MissionStart;
 import kr.co.enord.dji.popup.ReturnHome;
@@ -169,7 +169,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
     CustomPreFlightStatusWidget preflight_widget;
 
     //서버에서 내려받은 지역리스트를 저장(항목의 웨이포인트미션 상태에서 돌아가기 위해 사용)
-    List<GeoJsonArea> receivedMissions = null;
+    JsonArray receivedMissions = null;
 
     private final OnlineTileSourceBase VWorldStreet = new OnlineTileSourceBase("VWorld", 0, 22, 256, "jpeg",
             new String[0], "VWorld") {
@@ -274,12 +274,12 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
         // 드론 위치
         marker_drone_location = new Marker(m_map_view);
-//        marker_drone_location.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker, MapView mapView) {
-//                return true;
-//            }
-//        });
+        marker_drone_location.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                return true;
+            }
+        });
         marker_drone_location.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
         marker_drone_location.setIcon(MapLayer.getInstance().getRotateDrawable(m_context, R.mipmap.map_ico_drone, 0.0f));
         m_map_view.getOverlays().add(marker_drone_location);
@@ -733,8 +733,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 float flight_speed = Float.parseFloat(mission_flight_speed.getText().toString());
                 float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
 
-
-                DroneApplication.getAPI().altitude(marker_home_location.getPosition().getLongitude(), marker_home_location.getPosition().getLatitude())
+                API.INSTANCE.getCApiService().altitude(marker_home_location.getPosition().getLongitude(), marker_home_location.getPosition().getLatitude())
                         .enqueue(new Callback<AltResponse>(){
                     @Override
                     public  void onResponse(Call<AltResponse> call, Response<AltResponse> response){
@@ -776,8 +775,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 }
                 break;
             case R.id.btn_load_geo_json_from_server:
-
-                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionDownload(m_context)));
+                getPlanFromServer();
+//                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionDownload(m_context)));
                 break;
             case R.id.btn_load_geo_json:
                 RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionLoad(m_context)));
@@ -1115,72 +1114,73 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 setMission(msg.getMessage());
                 break;
             case EMessage.GEO_JSON_DOWNLOAD_TARGET:
-                GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
-                center = new GeoPoint(37.68781283875175,128.67533701890372); //test
-                receivedMissions = null;
-                targetId = Integer.parseInt(msg.getMessage());
-                Button back = (Button)findViewById(R.id.btn_area_back);
-                back.setVisibility(View.INVISIBLE);
-                DroneApplication.getAPI().listInArea(center.getLatitude(), center.getLongitude(), targetId).enqueue(new Callback<List<GeoJsonArea>>() {
-                    @Override
-                    public void onResponse(Call<List<GeoJsonArea>> call, Response<List<GeoJsonArea>> response) {
-                        runOnUiThread(() -> setMission(response.body() != null ? response.body() : new ArrayList<GeoJsonArea>()));
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<GeoJsonArea>> call, Throwable t) {
-                        ToastUtils.showToast(t.getLocalizedMessage());
-                    }
-                });
+//                GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
+//                center = new GeoPoint(37.68781283875175,128.67533701890372); //test
+//                receivedMissions = null;
+//                targetId = Integer.parseInt(msg.getMessage());
+//                Button back = (Button)findViewById(R.id.btn_area_back);
+//                back.setVisibility(View.INVISIBLE);
+//                DroneApplication.getAPI().listInArea(center.getLatitude(), center.getLongitude(), targetId).enqueue(new Callback<List<GeoJsonArea>>() {
+//                    @Override
+//                    public void onResponse(Call<List<GeoJsonArea>> call, Response<List<GeoJsonArea>> response) {
+//                        runOnUiThread(() -> setMission(response.body() != null ? response.body() : new ArrayList<GeoJsonArea>()));
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<List<GeoJsonArea>> call, Throwable t) {
+//                        ToastUtils.showToast(t.getLocalizedMessage());
+//                    }
+//                });
                 break;
 
         }
     }
 
-    private void setMission(List<GeoJsonArea> missions){
+    private void setMission(JsonArray missions){
         clearMission();
         receivedMissions = missions;
 
         // 1. 서버에서 불러온 미션 폴리곤 만들기
-        for(GeoJsonArea obj : missions){
+        for (Iterator<JsonElement> it = missions.iterator(); it.hasNext(); ) {
+            JsonObject item = it.next().getAsJsonObject();
             //마커로만 하도록 변경
 //            Polygon polygon = new Polygon();
+
+            GeoJson gson = new GeoJson(item.toString());
+
             // 비행기록과 비교해서 배경색 설정
-            int diff = MissionHistory.calculatePastDays(obj.getLand());
+            int diff = MissionHistory.calculatePastDays(gson.getLandTime());
             int color = Color.WHITE;
             if(diff < 0) color = Color.argb(60, 0, 255, 0);
             else if(diff == 0) color = Color.argb(60, 255, 0, 0);
             else color = Color.argb(60, 255, 127, 0);
 
-//            polygon.setFillColor(color);
-//            polygon.setStrokeWidth(1.0f);
-
-            RectD rect = new RectD(obj.getTop(), obj.getBottom(), obj.getLeft(), obj.getRight());
-//            polygon.setPoints(rect.getBound());
-
-
-            //파일명의 끝에 숫자로 표시하도록 변경
-            String title = String.valueOf(obj.getGroup_seq());
-            Marker m = getMissionCenterMarker(rect.getCenter(), title, color);
-            m.setRelatedObject(obj);
+            Marker m = getMissionCenterMarker(gson.getCenter(), String.valueOf(gson.getGroupSeq()), color);
 
             m.setOnMarkerClickListener((marker, mapView) -> {
-                showFlightPlanWayPoint(marker);
+                clearMission();
+                if(receivedMissions != null){
+                    //백버튼 활성화
+                    Button back = (Button)findViewById(R.id.btn_area_back);
+                    back.setVisibility(View.VISIBLE);
+                }
+                GeoJson gson1 = (GeoJson) marker.getRelatedObject();
+                FlightLog.INSTANCE.setMissionInfo(gson1.getGroupSeq(), API.INSTANCE.getLoginInfo().getCode());
+                setPointsFromFile(gson1.getCoordinates(), gson1.getCoordinates().size());
+
+                mission_line.setPoints(gson1.getCoordinates());
+                setMapCenter(new RectD(gson1.getCoordinates()));
+                setMissionPolygon();
+
+                tv_mission_file.setText( String.valueOf(gson1.getGroupSeq()));
+                tv_plan_number.setText( String.valueOf(gson1.getGroupSeq()));
+                // 임시파일 원본정보 설정
+//                GeoJsonEx.INSTANCE.setJSON(m_mission_file.m_filepath);
 
                 return false;
             });
 
-//            polygon.setRelatedObject(m);
-//            polygon.setOnClickListener(new Polygon.OnClickListener() {
-//                @Override
-//                public boolean onClick(Polygon polygon, MapView mapView, GeoPoint eventPos) {
-//                    Marker m = (Marker) polygon.getRelatedObject();
-//                    if(m != null) showFlightPlanWayPoint(m);
-//                    return false;
-//                }
-//            });
-//            m_map_view.getOverlayManager().add(polygon);
-//            m_waypoint_areas.add(polygon);
+            m.setRelatedObject(gson);
             m_waypoint_centers.add(m);
         }
 
@@ -1197,58 +1197,6 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         // 4. map center 이동 및 zoom 조절
         setMapCenter(m_waypoint_centers.get(0).getPosition(), 14);
         m_map_view.invalidate();
-    }
-
-    private void showFlightPlanWayPoint(@NonNull Marker marker) {
-        //1.서버에서 선택된 마커에 대응하는 비행경로 geojson받아옴
-        //2.성공적으로 받아오면 맵에 그려진 미션을 클리어함
-        //3.GeoJson을 이용하여 비행경로를 설정함
-        m_container_progress.setVisibility(View.VISIBLE);
-        GeoJsonArea area = (GeoJsonArea) marker.getRelatedObject();
-        DroneApplication.getAPI().flightPlan(marker.getPosition().getLatitude(), marker.getPosition().getLongitude(), targetId, area.getGroup_seq())
-                .enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                m_container_progress.setVisibility(View.INVISIBLE);
-                if(response.code() == 200){
-                    //서버에서 받은 임무
-                    clearMission();
-//                                m_mission_file = new MissionHistory(0, (String)marker.getRelatedObject());
-                    if(receivedMissions != null){
-                        //백버튼 활성화
-                        Button back = (Button)findViewById(R.id.btn_area_back);
-                        back.setVisibility(View.VISIBLE);
-                    }
-
-                    Gson parser = new Gson();
-                    String json = parser.toJson(response.body());
-                    GeoJson gson = new GeoJson(json);
-
-                    setPointsFromFile(gson.getCoordinates(), gson.getCoordinates().size());
-
-                    mission_line.setPoints(gson.getCoordinates());
-                    setMapCenter(new RectD(gson.getCoordinates()));
-                    tv_plan_number.setText(String.valueOf(area.getGroup_seq()));
-                    setMissionPolygon();
-
-                    //파일명이 없어서 그룹시퀀스로 대체
-                    tv_mission_file.setText(marker.getTitle());
-
-                    FlightLog.INSTANCE.setMissionInfo(area.getGroup_seq(), targetId);
-//                                // 임시파일 원본정보 설정
-//                                // TODO : 서버에서 받은 임무 처리로 변경
-//                                GeoJsonEx.INSTANCE.setJSON(m_mission_file.m_filepath);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                m_container_progress.setVisibility(View.INVISIBLE);
-                ToastUtils.showToast(t.getLocalizedMessage());
-
-            }
-        });
     }
 
     private void setMission(String folder_path) {
@@ -1410,6 +1358,26 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         Geo.getInstance().getElevations(mission_points);
 
         return mission_points;
+    }
+
+    private void getPlanFromServer(){
+        GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
+        center = new GeoPoint(33.29816158939347,126.26822768745023); //test
+        receivedMissions = null;
+        targetId = API.INSTANCE.getLoginInfo().getCode();
+        Button back = (Button)findViewById(R.id.btn_area_back);
+        back.setVisibility(View.INVISIBLE);
+        API.INSTANCE.getIApiService().flightPlan(center.getLatitude(), center.getLongitude(), targetId).enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                runOnUiThread(() -> setMission(response.body() != null ? response.body() : new JsonArray()));
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+
+            }
+        });
     }
 
     @Deprecated

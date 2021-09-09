@@ -4,58 +4,31 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import dji.common.error.DJIError;
-import dji.common.mission.waypoint.Waypoint;
-import dji.common.mission.waypoint.WaypointAction;
-import dji.common.mission.waypoint.WaypointActionType;
 import dji.common.mission.waypoint.WaypointMission;
-import dji.common.mission.waypoint.WaypointMissionFinishedAction;
-import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
-import dji.common.mission.waypoint.WaypointMissionGotoWaypointMode;
-import dji.common.mission.waypoint.WaypointMissionHeadingMode;
-import dji.common.mission.waypoint.WaypointMissionState;
-import dji.common.util.CommonCallbacks;
-import dji.keysdk.FlightControllerKey;
-import dji.keysdk.KeyManager;
-import dji.sdk.flightcontroller.Compass;
-import dji.sdk.mission.MissionControl;
 import dji.sdk.mission.waypoint.WaypointMissionOperator;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DefaultObserver;
 import io.reactivex.observers.DisposableObserver;
 import kr.co.enord.dji.BuildConfig;
 import kr.co.enord.dji.DroneApplication;
 import kr.co.enord.dji.R;
+import kr.co.enord.dji.api.API;
 import kr.co.enord.dji.model.FlightInfoDBHelper;
+import kr.co.enord.dji.model.LoginRequestData;
 import kr.co.enord.dji.model.RxEventBus;
 import kr.co.enord.dji.model.ViewWrapper;
-import kr.co.enord.dji.popup.CancelCalibration;
-import kr.co.enord.dji.popup.CancelMission;
-import kr.co.enord.dji.popup.CancelRTL;
-import kr.co.enord.dji.popup.CompassCalibration;
-import kr.co.enord.dji.popup.ConnectDrone;
-import kr.co.enord.dji.popup.FailCalibration;
-import kr.co.enord.dji.popup.Landing;
-import kr.co.enord.dji.popup.MissionStart;
-import kr.co.enord.dji.popup.ReturnHome;
-import kr.co.enord.dji.popup.SuccessCalibration;
-import kr.co.enord.dji.popup.TakeOff;
+import kr.co.enord.dji.utils.AES256Util;
 import kr.co.enord.dji.utils.ToastUtils;
-
-import static dji.keysdk.FlightControllerKey.HOME_LOCATION_LATITUDE;
-import static dji.keysdk.FlightControllerKey.HOME_LOCATION_LONGITUDE;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Login extends RelativeLayout implements View.OnClickListener {
 
@@ -140,7 +113,26 @@ public class Login extends RelativeLayout implements View.OnClickListener {
         switch ((v.getId()))
         {
             case R.id.btn_login:
-                processLogin();
+                EditText idText = findViewById(R.id.login_id);
+                EditText pwText = findViewById(R.id.login_password);
+                LoginRequestData data = new LoginRequestData(idText.getText().toString(),
+                        AES256Util.aesEncode(pwText.getText().toString()));
+                API.INSTANCE.getCApiService().login(data).enqueue(new Callback<List<kr.co.enord.dji.model.Login>>() {
+                    @Override
+                    public void onResponse(Call<List<kr.co.enord.dji.model.Login>> call, Response<List<kr.co.enord.dji.model.Login>> response) {
+                        if(response.body()!=null && response.body().size() > 0){
+                            API.INSTANCE.setLoginInfo(response.body().get(0));
+                            processLogin();
+                            return;
+                        }
+                        ToastUtils.showToast("로그인에 실패하였습니다.");
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<kr.co.enord.dji.model.Login>> call, Throwable t) {
+                        ToastUtils.showToast("로그인에 실패하였습니다.");
+                    }
+                });
                 break;
         }
     }

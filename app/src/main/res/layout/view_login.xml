@@ -20,7 +20,7 @@
             android:background="@android:color/white"
             android:ems="10"
             android:hint="아이디"
-            android:inputType="textPassword"
+            android:inputType="textAutoComplete"
             android:padding="12dp"
             android:singleLine="true"
             android:textAlignment="viewStart"

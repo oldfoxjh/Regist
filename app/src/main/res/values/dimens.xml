@@ -13,7 +13,7 @@
     <dimen name="map_mission_marker_width">30dp</dimen>
     <dimen name="map_mission_marker_height">20dp</dimen>
 
-    <dimen name="mission_font">14dp</dimen>
+    <dimen name="mission_font">20dp</dimen>
     <dimen name="entry_font">11dp</dimen>
 
     <dimen name="radio_button_font_size">7dp</dimen>

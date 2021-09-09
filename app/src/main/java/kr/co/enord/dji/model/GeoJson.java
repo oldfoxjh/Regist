@@ -18,7 +18,8 @@ public class GeoJson {
     private RectD m_bound = null;
 
     //서버에서 내려받을 경우 unique key와 history여부(찍은곳인지 아닌지)가 추가됨
-    private String key = "";
+    private int groupSeq = -1;
+    private String landTime = "";
 
     public GeoJson(String json) {
         try {
@@ -28,6 +29,11 @@ public class GeoJson {
             String type = geo.getString("type").toLowerCase();
 
             if(!type.equals("featurecollection")) return;
+
+            //Feature에서 property의 group_seq, land_datetime 가져옴(서버에서 받은것)
+            JSONObject properties = features.getJSONObject(0).optJSONObject("properties");
+            groupSeq = properties.optInt("group_seq");
+            landTime = properties.optString("land_datetime");
 
             // Feature의 첫번째 이외의 Data는 무시
             JSONObject geometry = features.getJSONObject(0).getJSONObject("geometry");
@@ -79,12 +85,14 @@ public class GeoJson {
         return m_bound.getCenter();
     }
 
-    public String getKey() {
-        return key;
+    public int getGroupSeq() {
+        return groupSeq;
     }
 
+    public String getLandTime() {return  landTime;}
+
     public Boolean fromServer(){
-        return !key.equals("");
+        return groupSeq != -1;
     }
 
     @Override
