@@ -32,8 +32,10 @@ public class GeoJson {
 
             //Feature에서 property의 group_seq, land_datetime 가져옴(서버에서 받은것)
             JSONObject properties = features.getJSONObject(0).optJSONObject("properties");
-            groupSeq = properties.optInt("group_seq");
-            landTime = properties.optString("land_datetime");
+            if(properties != null) {
+                groupSeq = properties.optInt("group_seq");
+                landTime = properties.optString("land_datetime");
+            }
 
             // Feature의 첫번째 이외의 Data는 무시
             JSONObject geometry = features.getJSONObject(0).getJSONObject("geometry");

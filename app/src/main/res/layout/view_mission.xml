@@ -133,7 +133,7 @@
                 <!--                android:layout_marginRight="2dp"-->
                 <!--                android:background="@drawable/btn_reverse_course_selector" />-->
             </LinearLayout>
-            <Button
+            <ImageButton
                 android:id="@+id/btn_flight_camera_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

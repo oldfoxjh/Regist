@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -161,7 +162,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 //    Button btn_flight_select_shoot;
 //    Button btn_flight_record;
 //    Button btn_flight_shoot;
-    Button btn_flight_camera_setting;
+    ImageButton btn_flight_camera_setting;
 //    TextView tv_flight_record_time;
     CameraSettingExposurePanel cameraSettingExposurePanel;
     // endregion
@@ -1232,6 +1233,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 String lastName = splitFileName[splitFileName.length-1];
                 title = String.valueOf(Integer.parseInt(lastName.substring(0,lastName.lastIndexOf("."))));
             }catch (Exception e){
+                title = String.valueOf(gson.getGroupSeq());
                 e.printStackTrace();
             }
             Marker m = getMissionCenterMarker(gson.getCenter(), title, color);
@@ -1248,6 +1250,16 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 setMissionPolygon();
 
                 tv_mission_file.setText(m_mission_file.m_filepath.substring(m_mission_file.m_filepath.lastIndexOf("/")+1));
+                String planNumber = String.valueOf(gson1.getGroupSeq());
+                try {
+                    String[] splitFileName = file.getName().split("_");
+                    String lastName = splitFileName[splitFileName.length-1];
+                    planNumber = String.valueOf(Integer.parseInt(lastName.substring(0,lastName.lastIndexOf("."))));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                tv_plan_number.setText(planNumber == "-1" ? "-" : planNumber);
 
                 // 임시파일 원본정보 설정
                 GeoJsonEx.INSTANCE.setJSON(m_mission_file.m_filepath);

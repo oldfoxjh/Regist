@@ -30,6 +30,7 @@ object FlightLog {
     fun clearMissionInfo(){
         groupSeq = -1
         plantCode = -1
+        id = -1
     }
 
     fun takeOff(){
