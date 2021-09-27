@@ -22,4 +22,6 @@ object API {
             }
             field = value
         }
+
+    var loginId  = ""
 }

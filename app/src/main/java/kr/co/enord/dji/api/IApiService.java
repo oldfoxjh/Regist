@@ -31,8 +31,8 @@ public interface IApiService {
     /**
      * 비행시작
      */
-    @GET("flight/start/{group_seq}/{lat}/{lng}/{datetime}/{code}")
-    Call<FlightStartResponse> flightStart(@Path("group_seq") int groupSeq, @Path("lat") Double lat, @Path("lng") Double lng, @Path("datetime") String date, @Path("code") int code);
+    @GET("flight/start/{group_seq}/{lat}/{lng}/{datetime}/{id}")
+    Call<FlightStartResponse> flightStart(@Path("group_seq") int groupSeq, @Path("lat") Double lat, @Path("lng") Double lng, @Path("datetime") String date, @Path("id") String loginid);
 
     /**
      * 5.완료

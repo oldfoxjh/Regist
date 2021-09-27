@@ -764,6 +764,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                     @Override
                     public  void onFailure(Call<AltResponse> call, Throwable t){
                         Log.e(TAG, "onFailure : " + t.getMessage());
+                        m_container_progress.setVisibility(INVISIBLE);
                         Toast.makeText(m_context, "네트워크 에러가 발생하였습니다.", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -1374,7 +1375,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
     private void getPlanFromServer(){
         GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
-        center = new GeoPoint(33.29816158939347,126.26822768745023); //test
+//        center = new GeoPoint(35.054996918743946,126.86963751412648); //test
         receivedMissions = null;
         targetId = API.INSTANCE.getLoginInfo().getCode();
         Button back = (Button)findViewById(R.id.btn_area_back);
@@ -1387,7 +1388,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
-
+                Log.e("get plan error", t.toString());
             }
         });
     }

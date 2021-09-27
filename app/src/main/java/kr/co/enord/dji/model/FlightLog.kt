@@ -51,7 +51,7 @@ object FlightLog {
         val droneStatus = DroneApplication.getDroneInstance().droneStatus
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         API.iApiService.flightStart(groupSeq, droneStatus.home_latitude, droneStatus.home_longitude, df.format(
-            takeOffDateTime),plantCode).enqueue(object : Callback<FlightStartResponse>{
+            takeOffDateTime),API.loginId).enqueue(object : Callback<FlightStartResponse>{
             override fun onResponse(call: Call<FlightStartResponse>, response: Response<FlightStartResponse>) {
                 Log.i("FLIGHT START", "send success : $response")
                 response.body()?.let {

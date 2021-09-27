@@ -1,6 +1,7 @@
 package kr.co.enord.dji.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
@@ -103,6 +104,8 @@ public class Login extends RelativeLayout implements View.OnClickListener {
         m_container_progress = findViewById(R.id.container_progress);
         login_drone_connect_info = findViewById(R.id.login_drone_connect_info);
         findViewById(R.id.btn_login).setOnClickListener(this);
+        //이전에 로그인한 id세팅
+        ((EditText)findViewById(R.id.login_id)).setText(getUsedId());
     }
 
     private WaypointMissionOperator waypointMissionOperator;
@@ -113,15 +116,17 @@ public class Login extends RelativeLayout implements View.OnClickListener {
         switch ((v.getId()))
         {
             case R.id.btn_login:
-                EditText idText = findViewById(R.id.login_id);
-                EditText pwText = findViewById(R.id.login_password);
-                LoginRequestData data = new LoginRequestData(idText.getText().toString(),
-                        AES256Util.aesEncode(pwText.getText().toString()));
+                String idText = ((EditText) findViewById(R.id.login_id)).getText().toString();
+                String pwText = ((EditText) findViewById(R.id.login_password)).getText().toString();
+                LoginRequestData data = new LoginRequestData(idText,
+                        AES256Util.aesEncode(pwText));
                 API.INSTANCE.getCApiService().login(data).enqueue(new Callback<List<kr.co.enord.dji.model.Login>>() {
                     @Override
                     public void onResponse(Call<List<kr.co.enord.dji.model.Login>> call, Response<List<kr.co.enord.dji.model.Login>> response) {
                         if(response.body()!=null && response.body().size() > 0){
                             API.INSTANCE.setLoginInfo(response.body().get(0));
+                            API.INSTANCE.setLoginId(idText);
+                            setLoginId(idText);
                             processLogin();
                             return;
                         }
@@ -181,4 +186,15 @@ public class Login extends RelativeLayout implements View.OnClickListener {
 
         }
     };
+
+    private String getUsedId(){
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("usedid", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("lastid", "");
+    }
+
+    private void setLoginId(String lastId){
+        SharedPreferences.Editor sharedPreferences = getContext().getSharedPreferences("usedid", Context.MODE_PRIVATE).edit();
+        sharedPreferences.putString("lastid", lastId);
+        sharedPreferences.commit();
+    }
 }
