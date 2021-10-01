@@ -44,7 +44,18 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+        <!-- 상단 드론 정보바 -->
+        <include
+            android:id="@+id/container_flight_info_top"
+            layout="@layout/flight_info_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toBottomOf="@+id/status_bar" />
         <!-- 임무 설정 삭제-->
 <!--        <LinearLayout-->
 <!--            android:id="@+id/container_mission_type"-->
@@ -80,6 +91,8 @@
 <!--                android:layout_marginTop="22dp"-->
 <!--                android:background="@drawable/btn_3d_mission_selector" />-->
 <!--        </LinearLayout>-->
+
+
 
         <LinearLayout
             android:id="@+id/container_function"
@@ -126,12 +139,12 @@
                 <!--                android:layout_marginRight="12dp"-->
                 <!--                android:background="@drawable/btn_initialize_course_selector" />-->
 
-                <!--            <Button-->
-                <!--                android:id="@+id/btn_reverse_course"-->
-                <!--                android:layout_width="36dp"-->
-                <!--                android:layout_height="36dp"-->
-                <!--                android:layout_marginRight="2dp"-->
-                <!--                android:background="@drawable/btn_reverse_course_selector" />-->
+                            <Button
+                                android:id="@+id/btn_reverse_course"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_marginRight="2dp"
+                                android:background="@drawable/btn_reverse_course_selector" />
             </LinearLayout>
             <ImageButton
                 android:id="@+id/btn_flight_camera_setting"
@@ -186,12 +199,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="200dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <!-- 촬영버튼  -->

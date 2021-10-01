@@ -67,29 +67,30 @@ object FlightLog {
     }
 
     private fun startFlightLog() {
-        val droneStatus = DroneApplication.getDroneInstance().droneStatus
-        if (!droneStatus.is_flying && isFlying){
-            //비행하다가 착륙
-            isFlying = false
-            landingDateTime = Date()
-            val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            API.iApiService.flightComplete(FlightComplete(
-                id,
-                df.format(landingDateTime),
-                positions.joinToString(",", prefix = "[", postfix = "]")
-            )).enqueue(object: retrofit2.Callback<Void> {
-                override fun onResponse(call: retrofit2.Call<Void>, response: Response<Void>) {
-                    Log.i("FLIGHT LOG", "send success : $response")
-                }
+        DroneApplication.getDroneInstance().droneStatus?.let{ droneStatus ->
+            if (!droneStatus.is_flying && isFlying){
+                //비행하다가 착륙
+                isFlying = false
+                landingDateTime = Date()
+                val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                API.iApiService.flightComplete(FlightComplete(
+                    id,
+                    df.format(landingDateTime),
+                    positions.joinToString(",", prefix = "[", postfix = "]")
+                )).enqueue(object: retrofit2.Callback<Void> {
+                    override fun onResponse(call: retrofit2.Call<Void>, response: Response<Void>) {
+                        Log.i("FLIGHT LOG", "send success : $response")
+                    }
 
-                override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
-                    Log.e("FLIGHT LOG", "send failure : $t")
-                }
-            })
-        }else{
-            isFlying = droneStatus.is_flying
-            positions.add(String.format("[%.6f, %.6f]", droneStatus.drone_longitude, droneStatus.drone_latitude))
-            Handler().postDelayed({ startFlightLog()}, 2000)
+                    override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
+                        Log.e("FLIGHT LOG", "send failure : $t")
+                    }
+                })
+            }else{
+                isFlying = droneStatus.is_flying
+                positions.add(String.format("[%.6f, %.6f]", droneStatus.drone_longitude, droneStatus.drone_latitude))
+                Handler().postDelayed({ startFlightLog()}, 2000)
+            }
         }
     }
 

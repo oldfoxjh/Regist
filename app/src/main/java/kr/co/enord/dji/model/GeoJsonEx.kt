@@ -12,16 +12,24 @@ import kotlin.collections.ArrayList
 object GeoJsonEx {
 
     private val directoryPath = Environment.getExternalStorageDirectory().toString() + File.separator + "enord" + File.separator + "Mission"+ File.separator + "중단임무"
-    private val fileName =  "temp.gson"
+    private var fileName =  "temp.gson"
 
 
     private var json = JSONObject()
     private var deletedArrayCount = 0;
     private val consumedIndex = ArrayList<Int>()
     fun setJSON(path: String){
+        fileName = path.splitToSequence("/").last()
         val jsonText = File(path).readText()
         json = JSONObject(jsonText)
         deletedArrayCount = 0;
+        consumedIndex.clear()
+    }
+
+    fun setJSON(json : JSONObject, fileNameSeq:String){
+        fileName = "${fileNameSeq}.gson"
+        this.json = json
+        deletedArrayCount = 0
         consumedIndex.clear()
     }
     fun deleteIndex(idx: Int) {
@@ -106,6 +114,9 @@ object GeoJsonEx {
     fun saveToFile(){
         val file = File(directoryPath)
         file?.mkdirs()
+        file?.listFiles().forEach {
+            it.deleteRecursively()
+        }
         val jsonString = json.toString()
 
         val file2 = File(file, fileName)

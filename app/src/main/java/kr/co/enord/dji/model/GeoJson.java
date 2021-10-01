@@ -21,10 +21,18 @@ public class GeoJson {
     private int groupSeq = -1;
     private String landTime = "";
 
+    private JSONObject originalJSONObject = null;
+
+    public JSONObject getOriginalJSONObject() {
+        return originalJSONObject;
+    }
+
     public GeoJson(String json) {
         try {
             // FeatureCollection 인지 확인
             JSONObject geo = new JSONObject(json);
+            originalJSONObject = geo;
+
             JSONArray features = geo.getJSONArray("features");
             String type = geo.getString("type").toLowerCase();
 

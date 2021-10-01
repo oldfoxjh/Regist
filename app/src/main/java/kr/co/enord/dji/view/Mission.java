@@ -77,6 +77,7 @@ import kr.co.enord.dji.popup.ReturnHome;
 import kr.co.enord.dji.utils.Geo;
 import kr.co.enord.dji.utils.InputFilterMinMax;
 import kr.co.enord.dji.utils.MapLayer;
+import kr.co.enord.dji.utils.MarkerWithInfo;
 import kr.co.enord.dji.utils.ResizeAnimation;
 import kr.co.enord.dji.utils.ToastUtils;
 import kr.co.enord.dji.widget.CustomPreFlightStatusWidget;
@@ -201,7 +202,32 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         if(timer == null) timer = new Timer();
         timer.schedule(new Mission.CollectDroneInformationTimer(), 0, period);
 
+//        setTakeOffPointsOverlays();
+
         super.onAttachedToWindow();
+    }
+
+    private void setTakeOffPointsOverlays(){
+        for (int i = 0; i < 1000; i++) {
+//            points.add(new LabelledGeoPoint(36 + Math.random() * 5, 126 + Math.random() * 5
+//                    , "Point #" + i));
+            MarkerWithInfo marker = new MarkerWithInfo(m_map_view);
+            marker.setPosition(new GeoPoint(36 + Math.random() * 5, 126 + Math.random() * 5));
+            marker.setIcon(getResources().getDrawable(R.mipmap.map_pin));
+            marker.setAnchor(Marker.ANCHOR_LEFT, Marker.ANCHOR_TOP);
+            marker.setTitle("Point# " + i);
+            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView) {
+                    getPlanFromServer(marker.getPosition());
+                    return true;
+                }
+            });
+            m_map_view.getOverlays().add(marker);
+
+        }
+
+
     }
 
     @Override
@@ -262,13 +288,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
         // 내위치
         marker_my_location = new Marker(m_map_view);
-//        marker_my_location.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker, MapView mapView) {
-//                singleTapConfirmedHelper(null);
-//                return true;
-//            }
-//        });
+        marker_my_location.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                singleTapConfirmedHelper(null);
+                return true;
+            }
+        });
         marker_my_location.setIcon(ContextCompat.getDrawable(m_context, R.mipmap.map_ico_my));
         marker_my_location.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
         m_map_view.getOverlays().add(marker_my_location);
@@ -350,7 +376,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         findViewById(R.id.btn_load_geo_json).setOnClickListener(this);                  // 파일 로드 버튼
         findViewById(R.id.btn_mission_upload).setOnClickListener(this);                 // 업로드 버튼
 //        findViewById(R.id.btn_new_course).setOnClickListener(this);
-//        findViewById(R.id.btn_reverse_course).setOnClickListener(this);
+        findViewById(R.id.btn_reverse_course).setOnClickListener(this);
 
 //        tv_mission_area = findViewById(R.id.tv_mission_area);
 //        tv_mission_lap_distance = findViewById(R.id.tv_mission_lap_distance);
@@ -448,7 +474,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
         // 비행중일 경우 FPV랑 전환
-        //if(is_map_mini == true) interchangeWidtet();
+        if(is_map_mini == true) interchangeWidtet();
 //        else {
 //            ArrayList<Polygon> overlays = new ArrayList();
 //            for(Polygon overlay : m_waypoint_areas){
@@ -478,7 +504,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         return false;
     }
 
-    @Deprecated
+
     private void interchangeWidtet(){
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int device_height = displayMetrics.heightPixels;
@@ -514,7 +540,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 mission_line.setPoints(selected_points);
 
                 // 미션거리/총거리 표시
-                double distance_total = mission_line.getDistance() + 0;
+                Polyline addHomeLine = new Polyline();
+                List<GeoPoint> addHome = new ArrayList<GeoPoint>();
+                addHome.add(marker_home_location.getPosition());
+                addHome.addAll(selected_points);
+                addHomeLine.setPoints(addHome);
+                double distance_total = addHomeLine.getDistance() + 0;
+//                double distance_total = mission_line.getDistance() + 0;
                 tv_mission_distance.setText(String.format("%.1f m", distance_total));
                 // 나머지. -
 //                tv_mission_area.setText("-");
@@ -777,7 +809,9 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 }
                 break;
             case R.id.btn_load_geo_json_from_server:
-                getPlanFromServer();
+                GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
+                center = new GeoPoint(35.054996918743946,126.86963751412648); //test
+                getPlanFromServer(center);
 //                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionDownload(m_context)));
                 break;
             case R.id.btn_load_geo_json:
@@ -786,11 +820,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 //            case R.id.btn_new_course:
 //                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new CancelMission(m_context)));
 //                break;
-//            case R.id.btn_reverse_course:
-//                ReverseWaypoint();
+            case R.id.btn_reverse_course:
+                ReverseWaypoint();
 //                break;
             case R.id.container_fpv:
-//                if(is_map_mini == false) interchangeWidtet();
+                if(is_map_mini == false) interchangeWidtet();
                 break;
             case R.id.preflight_status_view:
 
@@ -880,6 +914,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 if(container_fc.getVisibility() == View.INVISIBLE){
                     container_fc.setVisibility(View.VISIBLE);
                     findViewById(R.id.flight_info).setVisibility(View.VISIBLE);
+                    findViewById(R.id.container_flight_info_top).setVisibility(View.VISIBLE);
 //                    findViewById(R.id.container_mission_type).setVisibility(View.INVISIBLE);
                     findViewById(R.id.container_mission_setting).setVisibility(View.INVISIBLE);
                     // 임무 불러오기 및 초기화 버튼 invisible
@@ -890,6 +925,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 if(container_fc.getVisibility() == View.VISIBLE){
                     container_fc.setVisibility(View.INVISIBLE);
                     findViewById(R.id.flight_info).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.container_flight_info_top).setVisibility(View.INVISIBLE);
 //                    findViewById(R.id.container_mission_type).setVisibility(View.VISIBLE);
                     findViewById(R.id.container_mission_setting).setVisibility(View.VISIBLE);
                     // 임무 불러오기 및 초기화 버튼 invisible
@@ -1143,7 +1179,9 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         receivedMissions = missions;
 
         // 1. 서버에서 불러온 미션 폴리곤 만들기
+        int titleSeq = 0;
         for (Iterator<JsonElement> it = missions.iterator(); it.hasNext(); ) {
+            titleSeq++;
             JsonObject item = it.next().getAsJsonObject();
             //마커로만 하도록 변경
 //            Polygon polygon = new Polygon();
@@ -1157,8 +1195,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             else if(diff == 0) color = Color.argb(60, 255, 0, 0);
             else color = Color.argb(60, 255, 127, 0);
 
-            Marker m = getMissionCenterMarker(gson.getCenter(), String.valueOf(gson.getGroupSeq()), color);
-
+            Marker m = getMissionCenterMarker(gson.getCenter(), String.valueOf(titleSeq), color);
+            m.setTitle(String.valueOf(titleSeq));
             m.setOnMarkerClickListener((marker, mapView) -> {
                 clearMission();
                 if(receivedMissions != null){
@@ -1174,10 +1212,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 setMapCenter(new RectD(gson1.getCoordinates()));
                 setMissionPolygon();
 
-                tv_mission_file.setText( String.valueOf(gson1.getGroupSeq()));
-                tv_plan_number.setText( String.valueOf(gson1.getGroupSeq()));
+                tv_mission_file.setText( marker.getTitle());
+                tv_plan_number.setText( marker.getTitle());
                 // 임시파일 원본정보 설정
-//                GeoJsonEx.INSTANCE.setJSON(m_mission_file.m_filepath);
+
+                GeoJsonEx.INSTANCE.setJSON(gson1.getOriginalJSONObject(), marker.getTitle());
 
                 return false;
             });
@@ -1251,13 +1290,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 setMissionPolygon();
 
                 tv_mission_file.setText(m_mission_file.m_filepath.substring(m_mission_file.m_filepath.lastIndexOf("/")+1));
-                String planNumber = String.valueOf(gson1.getGroupSeq());
+                String planNumber = "-1";
                 try {
                     String[] splitFileName = file.getName().split("_");
                     String lastName = splitFileName[splitFileName.length-1];
                     planNumber = String.valueOf(Integer.parseInt(lastName.substring(0,lastName.lastIndexOf("."))));
                 }catch (Exception e){
-                    e.printStackTrace();
+                    planNumber = String.valueOf(gson1.getGroupSeq());
                 }
 
                 tv_plan_number.setText(planNumber == "-1" ? "-" : planNumber);
@@ -1373,14 +1412,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         return mission_points;
     }
 
-    private void getPlanFromServer(){
-        GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
-//        center = new GeoPoint(35.054996918743946,126.86963751412648); //test
+    private void getPlanFromServer(GeoPoint point){
+
         receivedMissions = null;
         targetId = API.INSTANCE.getLoginInfo().getCode();
         Button back = (Button)findViewById(R.id.btn_area_back);
         back.setVisibility(View.INVISIBLE);
-        API.INSTANCE.getIApiService().flightPlan(center.getLatitude(), center.getLongitude(), targetId).enqueue(new Callback<JsonArray>() {
+        API.INSTANCE.getIApiService().flightPlan(point.getLatitude(), point.getLongitude(), targetId).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 runOnUiThread(() -> setMission(response.body() != null ? response.body() : new JsonArray()));
@@ -1393,7 +1431,6 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         });
     }
 
-    @Deprecated
     private void ReverseWaypoint(){
         Collections.reverse(selected_points);
 
