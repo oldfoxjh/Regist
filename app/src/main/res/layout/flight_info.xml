@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="0.8"
-            android:text="임무파일명 : "
+            android:text="비행경로번호 : "
             android:textColor="#ffffff"
             android:textSize="12dp" />
 
@@ -24,6 +24,29 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:text="잔여비행거리 : "
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tv_mission_remaining_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="0.0m"
             android:textColor="#ffffff"
             android:textSize="14dp"
             android:textStyle="bold" />

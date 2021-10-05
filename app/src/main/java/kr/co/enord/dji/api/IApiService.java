@@ -22,6 +22,13 @@ public interface IApiService {
 //    @GET("api/mobile/areas/{latitude}/{longitude}/{targetCode}")
 //    Call<List<GeoJsonArea>> listInArea(@Path("latitude") Double lat, @Path("longitude") Double lng, @Path("targetCode") int target);
 
+
+    /**
+     * 이륙지점 검색
+     */
+    @GET("takeoff/{query}")
+    Call<JsonArray> takeOffPoints(@Path("query") String keyword);
+
     /**
      * 4.비행경로 요청
      */

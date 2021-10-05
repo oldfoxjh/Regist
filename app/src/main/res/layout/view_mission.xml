@@ -92,7 +92,21 @@
 <!--                android:background="@drawable/btn_3d_mission_selector" />-->
 <!--        </LinearLayout>-->
 
-
+        <EditText
+            android:id="@+id/search_takeoff_point"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:drawableRight="@android:drawable/ic_menu_search"
+            android:background="#000000"
+            android:imeOptions="actionSearch"
+            android:alpha="0.8"
+            android:textColor="#ffffff"
+            android:lines="1"
+            android:paddingLeft="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/status_bar"/>
 
         <LinearLayout
             android:id="@+id/container_function"

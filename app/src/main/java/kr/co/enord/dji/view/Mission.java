@@ -13,9 +13,11 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -171,7 +173,10 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
     CustomPreFlightStatusWidget preflight_widget;
 
     //서버에서 내려받은 지역리스트를 저장(항목의 웨이포인트미션 상태에서 돌아가기 위해 사용)
-    JsonArray receivedMissions = null;
+    private JsonArray receivedMissions = null;
+
+    private double distance_total = -1.0; //setMission에서 계산한 거리 비행중일때 비행라인의 거리를 빼서 남은 거리를 계산함
+    private List<Marker> takeOffMarkers = null;
 
     private final OnlineTileSourceBase VWorldStreet = new OnlineTileSourceBase("VWorld", 0, 22, 256, "jpeg",
             new String[0], "VWorld") {
@@ -202,32 +207,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         if(timer == null) timer = new Timer();
         timer.schedule(new Mission.CollectDroneInformationTimer(), 0, period);
 
-//        setTakeOffPointsOverlays();
-
         super.onAttachedToWindow();
-    }
-
-    private void setTakeOffPointsOverlays(){
-        for (int i = 0; i < 1000; i++) {
-//            points.add(new LabelledGeoPoint(36 + Math.random() * 5, 126 + Math.random() * 5
-//                    , "Point #" + i));
-            MarkerWithInfo marker = new MarkerWithInfo(m_map_view);
-            marker.setPosition(new GeoPoint(36 + Math.random() * 5, 126 + Math.random() * 5));
-            marker.setIcon(getResources().getDrawable(R.mipmap.map_pin));
-            marker.setAnchor(Marker.ANCHOR_LEFT, Marker.ANCHOR_TOP);
-            marker.setTitle("Point# " + i);
-            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker, MapView mapView) {
-                    getPlanFromServer(marker.getPosition());
-                    return true;
-                }
-            });
-            m_map_view.getOverlays().add(marker);
-
-        }
-
-
     }
 
     @Override
@@ -464,6 +444,70 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
         preflight_widget = findViewById(R.id.preflight_status_view);
         preflight_widget.setOnClickListener(this);
+
+        //이륙지점 검색
+        EditText takeOffPoint = findViewById(R.id.search_takeoff_point);
+        takeOffPoint.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                        (i == KeyEvent.KEYCODE_SEARCH || i == KeyEvent.KEYCODE_ENTER)){
+
+                    InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                    EditText search = (EditText) view;
+                    String keyword = search.getText().toString();
+                    searchTakeOffPoint(keyword);
+
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void searchTakeOffPoint(String keyword){
+        API.INSTANCE.getIApiService().takeOffPoints(keyword).enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                runOnUiThread(()->addTakeOffMarkers(response.body()));
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void addTakeOffMarkers(JsonArray data){
+        if(takeOffMarkers != null){
+            for(Marker marker : takeOffMarkers){
+                m_map_view.getOverlayManager().remove(marker);
+            }
+        }
+        takeOffMarkers = new ArrayList<>();
+        for (Iterator<JsonElement> it = data.iterator(); it.hasNext(); ) {
+
+            JsonObject item = it.next().getAsJsonObject();
+
+            MarkerWithInfo marker = new MarkerWithInfo(m_map_view);
+            marker.setPosition(new GeoPoint(item.get("y").getAsDouble(), item.get("x").getAsDouble()));
+            marker.setIcon(getResources().getDrawable(R.mipmap.map_pin));
+            marker.setAnchor(Marker.ANCHOR_LEFT, Marker.ANCHOR_TOP);
+            marker.setTitle(item.get("addr").getAsString());
+            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView) {
+                    getPlanFromServer(marker.getPosition());
+                    return true;
+                }
+            });
+            m_map_view.getOverlays().add(marker);
+            takeOffMarkers.add(marker);
+        }
+        m_map_view.invalidate();
     }
 
     /**
@@ -545,7 +589,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 addHome.add(marker_home_location.getPosition());
                 addHome.addAll(selected_points);
                 addHomeLine.setPoints(addHome);
-                double distance_total = addHomeLine.getDistance() + 0;
+                distance_total = addHomeLine.getDistance() + 0;
 //                double distance_total = mission_line.getDistance() + 0;
                 tv_mission_distance.setText(String.format("%.1f m", distance_total));
                 // 나머지. -
@@ -613,6 +657,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         flight_area.setPoints(new ArrayList<GeoPoint>());
         mission_line.setPoints(new ArrayList<GeoPoint>());
         flying_line.setPoints(new ArrayList<GeoPoint>());
+        distance_total = -1.0;
 
         m_map_view.invalidate();
 
@@ -810,7 +855,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 break;
             case R.id.btn_load_geo_json_from_server:
                 GeoPoint center = new GeoPoint(m_map_view.getMapCenter());
-                center = new GeoPoint(35.054996918743946,126.86963751412648); //test
+//                center = new GeoPoint(35.054996918743946,126.86963751412648); //test
                 getPlanFromServer(center);
 //                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionDownload(m_context)));
                 break;
@@ -909,6 +954,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             if(DroneApplication.getDroneInstance().isFlying()) {
                 GeoPoint _dron_location = new GeoPoint(status.drone_latitude, status.drone_longitude, status.drone_altitude);
                 flying_line.addPoint(_dron_location);
+                //잔여비행거리 표시
+                double remainingDistance = distance_total - flying_line.getDistance();
+                remainingDistance = remainingDistance > 0 ? remainingDistance : 0.0;
+                TextView distanceTextView = findViewById(R.id.tv_mission_remaining_distance);
+                distanceTextView.setText(String.format("%.1f m", remainingDistance));
 
                 // 복귀 기능 및 기체 정보 visible
                 if(container_fc.getVisibility() == View.INVISIBLE){
@@ -919,6 +969,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                     findViewById(R.id.container_mission_setting).setVisibility(View.INVISIBLE);
                     // 임무 불러오기 및 초기화 버튼 invisible
                     findViewById(R.id.container_function).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.search_takeoff_point).setVisibility(View.INVISIBLE);
                 }
             }else{
                 // 임무 정보 visible
@@ -930,6 +981,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                     findViewById(R.id.container_mission_setting).setVisibility(View.VISIBLE);
                     // 임무 불러오기 및 초기화 버튼 invisible
                     findViewById(R.id.container_function).setVisibility(View.VISIBLE);
+                    findViewById(R.id.search_takeoff_point).setVisibility(View.VISIBLE);
                 }
             }
 
@@ -1236,7 +1288,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         }
 
         // 4. map center 이동 및 zoom 조절
-        setMapCenter(m_waypoint_centers.get(0).getPosition(), 14);
+        setMapCenter(m_waypoint_centers.get(0).getPosition(), 18);
         m_map_view.invalidate();
     }
 
@@ -1331,11 +1383,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
      */
     private void setMapCenter(RectD rect){
         IMapController mapController = m_map_view.getController();
+//        mapController.setZoom(18.0);
         mapController.setCenter(rect.getCenter());
-        mapController.setZoom(rect.getZoomLevel());
+        mapController.setZoom((double) rect.getZoomLevel());
+
     }
 
-    private void setMapCenter(GeoPoint point, int zoom_level){
+    private void setMapCenter(GeoPoint point, double zoom_level){
         IMapController mapController = m_map_view.getController();
         mapController.setCenter(point);
         mapController.setZoom(zoom_level);
@@ -1413,7 +1467,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
     }
 
     private void getPlanFromServer(GeoPoint point){
-
+        m_container_progress.setVisibility(VISIBLE);
         receivedMissions = null;
         targetId = API.INSTANCE.getLoginInfo().getCode();
         Button back = (Button)findViewById(R.id.btn_area_back);
@@ -1421,12 +1475,17 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         API.INSTANCE.getIApiService().flightPlan(point.getLatitude(), point.getLongitude(), targetId).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                runOnUiThread(() -> setMission(response.body() != null ? response.body() : new JsonArray()));
+
+                runOnUiThread(() -> {
+                    m_container_progress.setVisibility(INVISIBLE);
+                    setMission(response.body() != null ? response.body() : new JsonArray());
+                });
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 Log.e("get plan error", t.toString());
+                m_container_progress.setVisibility(INVISIBLE);
             }
         });
     }
