@@ -488,18 +488,23 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             }
         }
         takeOffMarkers = new ArrayList<>();
+        List<GeoPoint> geo = new ArrayList<>();
         for (Iterator<JsonElement> it = data.iterator(); it.hasNext(); ) {
 
             JsonObject item = it.next().getAsJsonObject();
 
             MarkerWithInfo marker = new MarkerWithInfo(m_map_view);
-            marker.setPosition(new GeoPoint(item.get("y").getAsDouble(), item.get("x").getAsDouble()));
+            GeoPoint position = new GeoPoint(item.get("y").getAsDouble(), item.get("x").getAsDouble());
+            geo.add(position);
+            marker.setPosition(position);
             marker.setIcon(getResources().getDrawable(R.mipmap.map_pin));
             marker.setAnchor(Marker.ANCHOR_LEFT, Marker.ANCHOR_TOP);
             marker.setTitle(item.get("addr").getAsString());
             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
+                    mapView.getController().animateTo(marker.getPosition());
+
                     getPlanFromServer(marker.getPosition());
                     return true;
                 }
@@ -507,7 +512,10 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             m_map_view.getOverlays().add(marker);
             takeOffMarkers.add(marker);
         }
-        m_map_view.invalidate();
+        if(geo.size() > 0) {
+            setMapCenter(new RectD(geo));
+            m_map_view.invalidate();
+        }
     }
 
     /**
@@ -697,7 +705,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         marker.setTextLabelBackgroundColor(color);
         marker.setTextLabelForegroundColor(Color.BLACK);
         marker.setTextLabelFontSize(m_context.getResources().getDimensionPixelSize(R.dimen.mission_font));
-        marker.setTextIcon(title);
+        marker.setTextIcon(" " + title + " ");
 
 //        marker.setDraggable(true);
 //        marker.setOnMarkerDragListener(new OnMarkerDragListenerDrawer());
@@ -1247,7 +1255,9 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             else if(diff == 0) color = Color.argb(60, 255, 0, 0);
             else color = Color.argb(60, 255, 127, 0);
 
-            Marker m = getMissionCenterMarker(gson.getCenter(), String.valueOf(titleSeq), color);
+            //좌표들의 센터에서 첫번째 값으로 변경
+//            Marker m = getMissionCenterMarker(gson.getCenter(), String.valueOf(titleSeq), color);
+            Marker m = getMissionCenterMarker(gson.getCoordinates().get(0), String.valueOf(titleSeq), color);
             m.setTitle(String.valueOf(titleSeq));
             m.setOnMarkerClickListener((marker, mapView) -> {
                 clearMission();
@@ -1288,7 +1298,9 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         }
 
         // 4. map center 이동 및 zoom 조절
-        setMapCenter(m_waypoint_centers.get(0).getPosition(), 18);
+//        setMapCenter(m_waypoint_centers.get(0).getPosition(), 18);
+
+//        setMapCenter(new RectD(m_waypoint_centers));
         m_map_view.invalidate();
     }
 
