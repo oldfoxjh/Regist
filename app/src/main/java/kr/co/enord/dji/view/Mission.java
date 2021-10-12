@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -558,10 +557,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
 
     private void interchangeWidtet(){
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int device_height = displayMetrics.heightPixels;
-        int device_width = displayMetrics.widthPixels;
-
+//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int device_height = root_view.getMeasuredHeight();
+        int device_width = root_view.getMeasuredWidth();
+//        int device_height = displayMetrics.heightPixels;
+//        int device_width = displayMetrics.widthPixels;
         int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
         int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, getResources().getDisplayMetrics());
         int margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
@@ -598,8 +598,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 addHome.addAll(selected_points);
                 addHomeLine.setPoints(addHome);
                 distance_total = addHomeLine.getDistance() + 0;
-//                double distance_total = mission_line.getDistance() + 0;
-                tv_mission_distance.setText(String.format("%.1f m", distance_total));
+                double dp_distance_total = mission_line.getDistance() / 1000;
+                tv_mission_distance.setText(String.format("%.1f km", dp_distance_total));
                 // 나머지. -
 //                tv_mission_area.setText("-");
 //                tv_mission_lap_distance.setText("-");
@@ -875,7 +875,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 //                break;
             case R.id.btn_reverse_course:
                 ReverseWaypoint();
-//                break;
+                break;
             case R.id.container_fpv:
                 if(is_map_mini == false) interchangeWidtet();
                 break;
@@ -960,6 +960,13 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             // 6. 비행경로(비행중일때만)
             RelativeLayout container_fc = findViewById(R.id.container_flight_control);
             if(DroneApplication.getDroneInstance().isFlying()) {
+                if(takeOffMarkers != null){
+                    for(Marker marker : takeOffMarkers){
+                        m_map_view.getOverlayManager().remove(marker);
+                    }
+                    takeOffMarkers = null;
+                }
+
                 GeoPoint _dron_location = new GeoPoint(status.drone_latitude, status.drone_longitude, status.drone_altitude);
                 flying_line.addPoint(_dron_location);
                 //잔여비행거리 표시
