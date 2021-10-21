@@ -73,6 +73,7 @@ import kr.co.enord.dji.popup.CancelRTL;
 import kr.co.enord.dji.popup.CompassCalibration;
 import kr.co.enord.dji.popup.Landing;
 import kr.co.enord.dji.popup.MissionLoad;
+import kr.co.enord.dji.popup.MissionPause;
 import kr.co.enord.dji.popup.MissionStart;
 import kr.co.enord.dji.popup.ReturnHome;
 import kr.co.enord.dji.utils.Geo;
@@ -414,6 +415,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         btn_flight_return_home.setOnClickListener(this);
         btn_rtl_cancel = findViewById(R.id.btn_rtl_cancel);
         btn_rtl_cancel.setOnClickListener(this);
+
         // endregion
 
         // region 드론 촬영
@@ -1178,6 +1180,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
                 GeoJsonEx.INSTANCE.deleteIndex(selected_points.subList(0, index));
                 GeoJsonEx.INSTANCE.saveToFile();
+                break;
+            case RxEventBus.MISSION_PAUSED_BY_VISION_DETECTION:
+                //비전에 의해 장애물감지되었다는 알림을 표시함(임무 멈춤상태)
+                Log.e("PAUSE", "비전 감지됨");
+                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new MissionPause(m_context)));
                 break;
         }
     }

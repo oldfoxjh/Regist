@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:alpha="0.5"></RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_popup_confirm"
+        android:layout_width="320dp"
+        android:layout_height="168dp"
+        android:background="#FFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_popup_confirm_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="4dp"
+            android:text="장애물이 감지되어 임무를\n일시정지 하였습니다."
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="22dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_popup_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_popup_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#555"
+            android:text="재개"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.333" />
+
+        <Button
+            android:id="@+id/btn_popup_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#555"
+            android:text="닫기"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_popup_confirm"
+            app:layout_constraintWidth_percent="0.333" />
+        <Button
+            android:id="@+id/btn_popup_stop_beep"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#555"
+            android:text="소리끄기"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_popup_cancel"
+            app:layout_constraintWidth_percent="0.334" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

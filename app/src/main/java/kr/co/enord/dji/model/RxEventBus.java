@@ -1,8 +1,5 @@
 package kr.co.enord.dji.model;
 
-import android.os.Message;
-import android.view.View;
-
 import io.reactivex.subjects.PublishSubject;
 
 public class RxEventBus {
@@ -55,6 +52,7 @@ public class RxEventBus {
 
     public static final int MISSION_INITIALIZE = 0x1000;
     public static final int MISSION_UPDATE_WAYPOINT = 0x1001;
+    public static final int MISSION_PAUSED_BY_VISION_DETECTION = 0x1002;
 
     private static RxEventBus m_instance;
     private final PublishSubject<Integer> m_status;

@@ -203,6 +203,15 @@
                 android:layout_marginTop="22dp"
                 android:visibility="invisible"
                 android:background="@drawable/btn_landing_cancel_selector" />
+
+<!--            <Button-->
+<!--                android:id="@+id/pause_test"-->
+<!--                android:layout_width="36dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="test"-->
+<!--                android:background="@android:drawable/btn_default_small"-->
+<!--                android:layout_marginTop="100dp"-->
+<!--                />-->
         </RelativeLayout>
 
         <!-- 드론비행정보  -->

@@ -1,7 +1,12 @@
 package kr.co.enord.dji.model;
 
+import static dji.common.mission.waypoint.WaypointMissionState.EXECUTING;
+import static dji.common.mission.waypoint.WaypointMissionState.EXECUTION_PAUSED;
+import static dji.common.mission.waypoint.WaypointMissionState.READY_TO_EXECUTE;
+
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
@@ -12,6 +17,8 @@ import dji.common.camera.SystemState;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.CompassCalibrationState;
 import dji.common.flightcontroller.FlightControllerState;
+import dji.common.flightcontroller.VisionDetectionState;
+import dji.common.flightcontroller.VisionSystemWarning;
 import dji.common.gimbal.GimbalMode;
 import dji.common.gimbal.Rotation;
 import dji.common.gimbal.RotationMode;
@@ -299,6 +306,43 @@ public class DJI {
     }
 
     /**
+     * 임무를 재개한다.
+     * @return
+     */
+    public void resumeMission(){
+        if (!(getMissionState() == EXECUTION_PAUSED || getMissionState() == READY_TO_EXECUTE)) return;
+
+        MissionControl.getInstance().getWaypointMissionOperator().resumeMission(new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+                if(djiError!= null) {
+                    ToastUtils.showToast(djiError.getDescription());
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 임무를 중지한다.
+     */
+    public void pauseMission(){
+        if(getMissionState() != EXECUTING) return;
+
+        MissionControl.getInstance().getWaypointMissionOperator().pauseMission(new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+                if(djiError!= null) {
+                    ToastUtils.showToast(djiError.getDescription());
+                }else{
+                    //멈추고 노티함, 사용자 조작으로 웨이포인트 미션을 재시작할수있게 함
+                    RxEventBus.getInstance().sendDroneStatus(RxEventBus.MISSION_PAUSED_BY_VISION_DETECTION);
+                }
+            }
+        });
+    }
+
+    /**
      * 임무 상태를 반환한다.
      * @return
      */
@@ -498,6 +542,20 @@ public class DJI {
     }
 
 
+    public void startVisionDetection(){
+
+        getFlightController().getFlightAssistant().setVisionDetectionStateUpdatedCallback(new VisionDetectionState.Callback() {
+            @Override
+            public void onUpdate(@NonNull VisionDetectionState visionDetectionState) {
+                Log.e("VISION_DETECTION", visionDetectionState.toString());
+                if(visionDetectionState.getSystemWarning() == VisionSystemWarning.DANGEROUS){
+                    pauseMission();
+
+                }
+            }
+        });
+    }
+
     //endregion
 
     //region 짐벌
@@ -666,6 +724,7 @@ public class DJI {
 
         @Override
         public void onExecutionStart() {
+            startVisionDetection();
         }
 
         @Override
