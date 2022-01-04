@@ -41,6 +41,7 @@ public class MissionStart extends ConstraintLayout implements View.OnClickListen
         switch (v.getId())
         {
             case R.id.btn_popup_confirm:
+                v.setEnabled(false);
                 DroneApplication.getDroneInstance().startMission();
                 RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(null));
                 break;

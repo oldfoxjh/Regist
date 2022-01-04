@@ -6,6 +6,7 @@ import android.media.ToneGenerator
 import android.os.Handler
 import android.os.Looper
 import kr.co.enord.dji.DroneApplication
+import java.lang.Exception
 
 object ToneUtil {
     private var tone = ToneGenerator(AudioManager.STREAM_ALARM, 100)
@@ -24,7 +25,11 @@ object ToneUtil {
     }
 
     fun stopBeep(){
-        tone.stopTone()
-        tone.release()
+        try {
+            tone.stopTone()
+            tone.release()
+        }catch (e:Exception){
+
+        }
     }
 }

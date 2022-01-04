@@ -1,8 +1,7 @@
 package kr.co.enord.dji.model;
 
-import android.util.Log;
-
 import org.osmdroid.util.GeoPoint;
+
 import java.util.List;
 
 import dji.common.mission.waypoint.Waypoint;
@@ -14,7 +13,6 @@ import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
 import dji.common.mission.waypoint.WaypointMissionGotoWaypointMode;
 import dji.common.mission.waypoint.WaypointMissionHeadingMode;
 import kr.co.enord.dji.DroneApplication;
-import kr.co.enord.dji.utils.Geo;
 
 public class EnordWaypointMission {
 
@@ -42,7 +40,12 @@ public class EnordWaypointMission {
             //if(DroneApplication.getInterdPoint().contains(i)) calculated_altitude += 20;
 
             Waypoint waypoint = new Waypoint(point.getLatitude(), point.getLongitude(), calculated_altitude);
-            if(!DroneApplication.getInterdPoint().contains(i)) waypoint.addAction(new WaypointAction(WaypointActionType.START_TAKE_PHOTO, 1));
+
+            if(!DroneApplication.getInterdPoint().contains(i)){
+                waypoint.addAction(new WaypointAction(WaypointActionType.GIMBAL_PITCH, -90));
+                waypoint.addAction(new WaypointAction(WaypointActionType.START_TAKE_PHOTO, 1));
+            }
+
             builder.addWaypoint(waypoint);
         }
 
