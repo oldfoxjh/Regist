@@ -145,6 +145,19 @@ public class DJI {
         }
     }
 
+    public void setMaxFlightRadius(int meter){
+        try{
+
+            FlightController flight_controller = getFlightController();
+            flight_controller.setMaxFlightRadius(meter, djiError -> {
+                if(djiError != null){
+                    ToastUtils.showToast(djiError.getDescription());
+                }
+            });
+        }catch (NullPointerException ex){
+        }
+    }
+
     //region 자동이륙,자동복귀
     /**
      * 자동이륙 명령

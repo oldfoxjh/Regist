@@ -14,10 +14,18 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import dji.common.camera.SettingsDefinitions;
 import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
@@ -30,12 +38,6 @@ import kr.co.enord.dji.model.EnordLocationManager;
 import kr.co.enord.dji.model.RxEventBus;
 import kr.co.enord.dji.model.ViewWrapper;
 import kr.co.enord.dji.utils.ToastUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -196,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
 
                             // 드론 비행고도를 최고치로 설정
                             DroneApplication.getDroneInstance().setMaxFlightHeight(500);
+
+                            // 드론 비행반경을 최고치로 설정
+                            DroneApplication.getDroneInstance().setMaxFlightRadius(8000);
 
                             // 광학줌 지원이 되면 최대 초점거리 설정 - 2020.12.09
                             DroneApplication.getDroneInstance().isOpticalZoomSupported();
