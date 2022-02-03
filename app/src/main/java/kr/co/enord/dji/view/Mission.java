@@ -109,6 +109,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
     List<Marker> selected_markers = new ArrayList<>();          // 사용자가 선택한 위치를 나타내는 마커
     List<GeoPoint> selected_points = new ArrayList<>();         // 사용자가 선택한 위치를
     List<Marker> captured_markers = new ArrayList<>();          // 촬영지점 위치를 나타내는 마커
+    List<Boolean> selected_actions = new ArrayList<>();
 
     Polygon flight_area = new Polygon();                        // 촬영영역
     Polyline mission_line = new Polyline();                     // 임무영역
@@ -662,6 +663,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
         selected_markers.clear();
         selected_points.clear();
+        selected_actions.clear();
         captured_markers.clear();
 
         flight_area.setPoints(new ArrayList<GeoPoint>());
@@ -817,6 +819,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 m_container_progress.setVisibility(VISIBLE);
 
                 // 임무 생성
+                Boolean reverse = ((Button)findViewById(R.id.btn_reverse_course)).isSelected();
+                List<Boolean> takeShotActions = selected_actions;
                 EnordWaypointMission mission = new EnordWaypointMission();
                 float flight_speed = Float.parseFloat(mission_flight_speed.getText().toString());
                 float altitude = Float.parseFloat(mission_flight_altitude.getText().toString());
@@ -830,7 +834,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                             Log.e("DJI", "고도 : " + body.getAltitude());
                             marker_home_location.getPosition().setAltitude(body.getAltitude());
 //                            if(btn_waypoint_mission.isSelected()) {
-                                mission.createWaypointMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed, altitude);
+                                mission.createWaypointMission(getMissonWaypoint(), takeShotActions , marker_home_location.getPosition(), flight_speed, altitude);
 //                            }else{
 //                                mission.createAreaMission(getMissonWaypoint(), marker_home_location.getPosition(), flight_speed);
 //                            }
@@ -876,6 +880,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 //                RxEventBus.getInstance().sendViewWrapper(new ViewWrapper(new CancelMission(m_context)));
 //                break;
             case R.id.btn_reverse_course:
+                Button reverseButton = (Button) v;
+                reverseButton.setSelected(reverseButton.isSelected());
                 ReverseWaypoint();
                 break;
             case R.id.container_fpv:
@@ -1101,6 +1107,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             case RxEventBus.DRONE_MISSION_START_FAIL:
                 break;
             case RxEventBus.DRONE_MISSION_START_SUCCESS:
+                // 미션 실행이 성공되면 미션 시작 팝업 삭제
+                ViewWrapper forceRemove = new ViewWrapper(null);
+                forceRemove.setTag(ViewWrapper.MissonStartRemove);
+                RxEventBus.getInstance().sendViewWrapper(forceRemove);
+
                 // 짐벌 각도 수정
                 DroneApplication.getDroneInstance().setGimbalRotate(-90);
 
@@ -1282,7 +1293,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 }
                 GeoJson gson1 = (GeoJson) marker.getRelatedObject();
                 FlightLog.INSTANCE.setMissionInfo(gson1.getGroupSeq(), API.INSTANCE.getLoginInfo().getCode());
-                setPointsFromFile(gson1.getCoordinates(), gson1.getCoordinates().size());
+                setPointsFromFile(gson1.getCoordinates(), gson1.getCoordinates().size(), gson1.getTakePictureSpot());
 
                 mission_line.setPoints(gson1.getCoordinates());
                 setMapCenter(new RectD(gson1.getCoordinates()));
@@ -1361,7 +1372,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
                 m_mission_file = new MissionHistory(0, (String)marker.getRelatedObject());
                 GeoJson gson1 = Geo.getInstance().getGeoInfo(m_mission_file.m_filepath);
 
-                setPointsFromFile(gson1.getCoordinates(), gson1.getCoordinates().size());
+                setPointsFromFile(gson1.getCoordinates(), gson1.getCoordinates().size(), gson1.getTakePictureSpot());
 
                 mission_line.setPoints(gson1.getCoordinates());
                 setMapCenter(new RectD(gson1.getCoordinates()));
@@ -1426,16 +1437,17 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
      * @param points
      * @param size
      */
-    private void setPointsFromFile(List<GeoPoint> points, int size){
+    private void setPointsFromFile(List<GeoPoint> points, int size, List<Boolean> actions){
         GeoPoint inter_point = null;
 
         // 이륙지점과 첫번째 지점 중간 체크 해서 추가
-        DroneApplication.getInterdPoint().clear();
+//        DroneApplication.getInterdPoint().clear();
         if(marker_home_location.getPosition().getLatitude() > 0.1 || marker_home_location.getPosition().getLatitude() > 0.1) {
             inter_point = getInterPoint(marker_home_location.getPosition(), points.get(0));
             if (inter_point != null) {
                 selected_points.add(inter_point);
-                DroneApplication.getInterdPoint().add(selected_points.size()-1);
+                selected_actions.add(false);
+//                DroneApplication.getInterdPoint().add(selected_points.size()-1);
             }
         }
 
@@ -1443,7 +1455,11 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
         for(int i = 0; i < size; i++){
             GeoPoint point = points.get(i);
             selected_points.add(point);
-
+            try {
+                selected_actions.add(actions.get(i));
+            }catch (ArrayIndexOutOfBoundsException e){
+                selected_actions.add(true);
+            }
             // 다음 지점간에 고도가 10m 이상 높은 지점이 존재하면 중간에 웨이포인트 추가함..
             if(i < (size - 1)) {
                 GeoPoint next = points.get(i+1);
@@ -1451,7 +1467,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
                 if(inter_point != null){
                     selected_points.add(inter_point);
-                    DroneApplication.getInterdPoint().add(selected_points.size()-1);
+                    selected_actions.add(false);
+//                    DroneApplication.getInterdPoint().add(selected_points.size()-1);
                 }
             }
         }
@@ -1461,7 +1478,8 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
             inter_point = getInterPoint(points.get(size-1), marker_home_location.getPosition());
             if (inter_point != null) {
                 selected_points.add(inter_point);
-                DroneApplication.getInterdPoint().add(selected_points.size()-1);
+                selected_actions.add(false);
+//                DroneApplication.getInterdPoint().add(selected_points.size()-1);
             }
         }
     }
@@ -1518,11 +1536,12 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 
     private void ReverseWaypoint(){
         Collections.reverse(selected_points);
+        Collections.reverse(selected_actions);
 
-        // 중간지점 인덱스값을 reverse 된 값으로 수정
-        for(int i = 0; i < DroneApplication.getInterdPoint().size(); i++){
-            DroneApplication.getInterdPoint().set(i,selected_points.size() - (1 + DroneApplication.getInterdPoint().get(i)));
-        }
+//        // 중간지점 인덱스값을 reverse 된 값으로 수정
+//        for(int i = 0; i < DroneApplication.getInterdPoint().size(); i++){
+//            DroneApplication.getInterdPoint().set(i,selected_points.size() - (1 + DroneApplication.getInterdPoint().get(i)));
+//        }
         setMissionPolygon();
         m_map_view.invalidate();
     }

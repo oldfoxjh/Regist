@@ -10,4 +10,7 @@
         android:state_enabled="true"
         android:drawable="@mipmap/btn_reverse_n" />
 
+    <item
+        android:state_selected="true"
+        android:drawable="@mipmap/btn_reverse_s" />
 </selector>

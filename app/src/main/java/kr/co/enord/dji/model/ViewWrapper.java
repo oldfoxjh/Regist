@@ -4,6 +4,8 @@ import android.view.View;
 
 public class ViewWrapper {
 
+    public static String MissonStartRemove = "mission start force remove";
+
     private View view;
     private String tag = null;
 

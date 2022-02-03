@@ -12,7 +12,6 @@ import dji.common.mission.waypoint.WaypointMissionFinishedAction;
 import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
 import dji.common.mission.waypoint.WaypointMissionGotoWaypointMode;
 import dji.common.mission.waypoint.WaypointMissionHeadingMode;
-import kr.co.enord.dji.DroneApplication;
 
 public class EnordWaypointMission {
 
@@ -25,7 +24,7 @@ public class EnordWaypointMission {
     /**
      * 특정 지점 촬영 임무
      */
-    public void createWaypointMission(List<GeoPoint> points, GeoPoint base_point, float flight_speed, float altitude){
+    public void createWaypointMission(List<GeoPoint> points,  List<Boolean> actions,GeoPoint base_point, float flight_speed, float altitude){
         WaypointMission.Builder builder = getWaypointBuilder(flight_speed);
 
         int size = points.size();
@@ -41,7 +40,8 @@ public class EnordWaypointMission {
 
             Waypoint waypoint = new Waypoint(point.getLatitude(), point.getLongitude(), calculated_altitude);
 
-            if(!DroneApplication.getInterdPoint().contains(i)){
+            if (actions.get(i)){
+//            if(!DroneApplication.getInterdPoint().contains(i)){
                 waypoint.addAction(new WaypointAction(WaypointActionType.GIMBAL_PITCH, -90));
                 waypoint.addAction(new WaypointAction(WaypointActionType.START_TAKE_PHOTO, 1));
             }
@@ -58,7 +58,10 @@ public class EnordWaypointMission {
 
     /**
      * 특정 영역 촬영 임무
+     * @deprecated 사용안함
      */
+    //@Deprecated
+    /*
     public void createAreaMission(List<GeoPoint> points, GeoPoint base_point, float flight_speed){
         WaypointMission.Builder builder = getWaypointBuilder(flight_speed);
 
@@ -72,6 +75,7 @@ public class EnordWaypointMission {
 
         m_waypoint_missions = builder.build();
     }
+    */
 
     private WaypointMission.Builder getWaypointBuilder(float flight_speed)
     {

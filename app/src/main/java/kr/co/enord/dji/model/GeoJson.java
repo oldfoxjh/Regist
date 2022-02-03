@@ -16,6 +16,7 @@ public class GeoJson {
     private int m_type = GEO_TYPE_NONE;
     private List<GeoPoint> m_coordinates = new ArrayList<>();
     private RectD m_bound = null;
+    private List<Boolean> mTakePictureSpot = new ArrayList<>();
 
     //서버에서 내려받을 경우 unique key와 history여부(찍은곳인지 아닌지)가 추가됨
     private int groupSeq = -1;
@@ -71,6 +72,13 @@ public class GeoJson {
 
                 m_coordinates.add(new GeoPoint(latitude, longitude, altitude));
 
+                try {
+                    //point의 4번째 숫자가 0이면 사진촬영안함
+                    mTakePictureSpot.add(point.getInt(3) != 0);
+                }catch (JSONException e){
+                    mTakePictureSpot.add(true);
+                }
+
             }
 
             m_bound = new RectD(m_coordinates);
@@ -105,6 +113,9 @@ public class GeoJson {
         return groupSeq != -1;
     }
 
+    public List<Boolean> getTakePictureSpot() {
+        return mTakePictureSpot;
+    }
     @Override
     public String toString() {
         return "GeoJson{" +

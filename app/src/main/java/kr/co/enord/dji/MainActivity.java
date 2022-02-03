@@ -37,6 +37,7 @@ import io.reactivex.observers.DefaultObserver;
 import kr.co.enord.dji.model.EnordLocationManager;
 import kr.co.enord.dji.model.RxEventBus;
 import kr.co.enord.dji.model.ViewWrapper;
+import kr.co.enord.dji.popup.MissionStart;
 import kr.co.enord.dji.utils.ToastUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -275,8 +276,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(ViewWrapper wrapper) {
                         runOnUiThread(() -> {
-                            if(wrapper.getView() != null) pushView(wrapper);
-                            else popView();
+                            if (wrapper.getTag() == ViewWrapper.MissonStartRemove){
+                                removeAllMissionStart();
+                            }else {
+                                if (wrapper.getView() != null) pushView(wrapper);
+                                else popView();
+                            }
                         });
                     }
 
@@ -321,6 +326,28 @@ public class MainActivity extends AppCompatActivity {
         ViewWrapper removeWrapper = m_stack.pop();
 
         m_content_frameLayout.removeView(removeWrapper.getView());
+    }
+
+    /**
+     * MissionStart Class팝업이 사라지지 않는 문제가 발생하여 필요시 모든 MissionStart class를 삭제
+     */
+    private void removeAllMissionStart(){
+        try {
+            List<View> indexToRemove = new ArrayList<View>();
+            for (int i = 0; i < m_content_frameLayout.getChildCount(); i++) {
+                View v = m_content_frameLayout.getChildAt(i);
+                if (v instanceof MissionStart) {
+                    indexToRemove.add(v);
+                }
+            }
+
+            for (View v : indexToRemove) {
+                m_content_frameLayout.removeView(v);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     // endregion
 

@@ -118,6 +118,10 @@ public class DroneApplication extends Application {
         return -1;
     }
 
+    /**
+     * @deprecated inter point 설정은 웨이포인트사이의 가격이 멀어 중간 비행지점을 추가하여 사진을 찍지 않도록 설정하기 위함이나 사진촬영 설정을 따로 내려받게 되어 삭제함
+     */
+    @Deprecated
     public static List<Integer> getInterdPoint(){
         if(inter_point_index == null) inter_point_index = new ArrayList<>();
         return inter_point_index;
