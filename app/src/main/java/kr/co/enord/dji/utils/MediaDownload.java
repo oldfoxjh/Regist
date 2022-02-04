@@ -2,6 +2,16 @@ package kr.co.enord.dji.utils;
 
 import android.os.Environment;
 import android.util.Log;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
 import dji.common.camera.SettingsDefinitions;
 import dji.common.error.DJIError;
 import dji.sdk.media.DownloadListener;
@@ -9,10 +19,6 @@ import dji.sdk.media.FetchMediaTaskScheduler;
 import dji.sdk.media.MediaFile;
 import dji.sdk.media.MediaManager;
 import kr.co.enord.dji.DroneApplication;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * @deprecated 업로드를 위해서 사용된 클래스지만 업로드 기능을 사용하지 않아 삭제처리, 서버 api도 삭제됨
@@ -39,8 +45,12 @@ public class MediaDownload {
             save_path.mkdirs();
         }
 
-        if(media_manager == null && DroneApplication.getDrone() != null){
-            media_manager = DroneApplication.getDrone().getCamera().getMediaManager();
+        try {
+            if (media_manager == null && DroneApplication.getDrone() != null) {
+                media_manager = DroneApplication.getDrone().getCamera().getMediaManager();
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
 
         if(media_manager == null) return;

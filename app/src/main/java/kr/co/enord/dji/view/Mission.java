@@ -881,7 +881,7 @@ public class Mission extends RelativeLayout implements View.OnClickListener, Map
 //                break;
             case R.id.btn_reverse_course:
                 Button reverseButton = (Button) v;
-                reverseButton.setSelected(reverseButton.isSelected());
+                reverseButton.setSelected(!reverseButton.isSelected());
                 ReverseWaypoint();
                 break;
             case R.id.container_fpv:
